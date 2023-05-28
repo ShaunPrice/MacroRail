@@ -125,6 +125,3 @@ Where:
 
 **Note:** If you're shooting JPEG images, either by themselves or with RAW images, the shot will be shown in the black area in the middle of the screen.
 
-## TODO
-1. Add logging to the shoot
-2. Show images after shooting regardsless of what compression is used (i.e. RAW or JPEG).
