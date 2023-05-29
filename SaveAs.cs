@@ -49,7 +49,7 @@ namespace MacroRail
                 m_project = textBoxProjectName.Text;
                 m_description = textBoxDescription.Text;
                 m_version = (string)textBoxVersion.Text;
-                
+
                 DialogResult = DialogResult.OK;
             }
             else

@@ -148,6 +148,7 @@
             MinimizeBox = false;
             Name = "SaveAs";
             ShowIcon = false;
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Save As";
             ResumeLayout(false);
             PerformLayout();

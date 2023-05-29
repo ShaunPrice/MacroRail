@@ -68,6 +68,7 @@ namespace MacroRail
 
             // Set up defaults
             comboBoxCameraSensorSize.SelectedIndex = 0;
+            textBoxJogSpeed.Text = (((double)rail.jog_speed / (double)rail.max_speed) * 100).ToString("###0");
 
             // Disable buttons
             ToggleButtons(false);
@@ -1598,6 +1599,7 @@ namespace MacroRail
             settings.GearRatio = rail.gear_ratio;
             settings.StepsMM = rail.steps_mm;
             settings.MaxSpeed = rail.max_speed;
+            settings.JogSpeed = rail.jog_speed;
 
             if (settings.ShowDialog() == DialogResult.OK)
             {
@@ -1608,6 +1610,7 @@ namespace MacroRail
                 rail.gear_ratio = settings.GearRatio;
                 rail.steps_mm = settings.StepsMM;
                 rail.max_speed = settings.MaxSpeed;
+                rail.jog_speed = settings.JogSpeed;
 
                 Properties.Settings.Default.thread_pitch = rail.pitch;
                 Properties.Settings.Default.thread_starts = rail.thread_starts;
@@ -1615,7 +1618,10 @@ namespace MacroRail
                 Properties.Settings.Default.gear_ratio = rail.gear_ratio;
                 Properties.Settings.Default.steps_mm = rail.steps_mm;
                 Properties.Settings.Default.max_speed = rail.max_speed;
+                Properties.Settings.Default.jog_speed = rail.jog_speed;
                 Properties.Settings.Default.Save();
+
+                textBoxJogSpeed.Text = (((double)rail.jog_speed / (double)rail.max_speed) * 100).ToString("###0");
             }
         }
 

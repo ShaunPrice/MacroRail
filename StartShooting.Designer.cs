@@ -272,6 +272,7 @@
             MinimizeBox = false;
             Name = "StartShooting";
             ShowIcon = false;
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Start Shooting";
             ResumeLayout(false);
             PerformLayout();

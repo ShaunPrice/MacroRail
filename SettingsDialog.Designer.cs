@@ -153,6 +153,7 @@
             comboBoxStepsPerRevolution.Name = "comboBoxStepsPerRevolution";
             comboBoxStepsPerRevolution.Size = new Size(222, 33);
             comboBoxStepsPerRevolution.TabIndex = 14;
+            comboBoxStepsPerRevolution.SelectedValueChanged += comboBoxStepsPerRevolution_SelectedValueChanged;
             // 
             // labelMicrosteps
             // 
@@ -173,6 +174,7 @@
             comboBoxMicrosteps.Name = "comboBoxMicrosteps";
             comboBoxMicrosteps.Size = new Size(222, 33);
             comboBoxMicrosteps.TabIndex = 12;
+            comboBoxMicrosteps.SelectedValueChanged += comboBoxMicrosteps_SelectedValueChanged;
             // 
             // buttonCalculate
             // 
@@ -223,6 +225,7 @@
             comboBoxThreadStarts.Name = "comboBoxThreadStarts";
             comboBoxThreadStarts.Size = new Size(222, 33);
             comboBoxThreadStarts.TabIndex = 7;
+            comboBoxThreadStarts.SelectedValueChanged += comboBoxThreadStarts_SelectedValueChanged;
             // 
             // textBoxMaxSpeed
             // 
@@ -282,6 +285,7 @@
             Margin = new Padding(3, 4, 3, 4);
             Name = "SettingsDialog";
             SizeGripStyle = SizeGripStyle.Hide;
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Settings";
             Load += SettingsDialog_Load;
             groupBoxThreadRod.ResumeLayout(false);

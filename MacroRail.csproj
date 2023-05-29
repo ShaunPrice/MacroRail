@@ -18,20 +18,18 @@
     <FileVersion>0.2.1</FileVersion>
     <PackageLicenseFile>LICENCE</PackageLicenseFile>
     <PlatformTarget>x64</PlatformTarget>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="dependancies\**" />
     <Compile Remove="dependencies\**" />
-    <Compile Remove="md3\**" />
     <Compile Remove="nikoncswrapper\**" />
     <EmbeddedResource Remove="dependancies\**" />
     <EmbeddedResource Remove="dependencies\**" />
-    <EmbeddedResource Remove="md3\**" />
     <EmbeddedResource Remove="nikoncswrapper\**" />
     <None Remove="dependancies\**" />
     <None Remove="dependencies\**" />
-    <None Remove="md3\**" />
     <None Remove="nikoncswrapper\**" />
   </ItemGroup>
 
@@ -40,7 +38,135 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="md3\dnssd.dll" />
+    <None Remove="md3\NkdPTP.dll" />
+    <None Remove="md3\NkRoyalmile.dll" />
+    <None Remove="md3\Type0001.md3" />
+    <None Remove="md3\Type0002.md3" />
+    <None Remove="md3\Type0003.md3" />
+    <None Remove="md3\Type0004.md3" />
+    <None Remove="md3\Type0005.md3" />
+    <None Remove="md3\Type0006.md3" />
+    <None Remove="md3\Type0007.md3" />
+    <None Remove="md3\Type0008.md3" />
+    <None Remove="md3\Type0009.md3" />
+    <None Remove="md3\Type0010.md3" />
+    <None Remove="md3\Type0011.md3" />
+    <None Remove="md3\Type0012.md3" />
+    <None Remove="md3\Type0013.md3" />
+    <None Remove="md3\Type0014.md3" />
+    <None Remove="md3\Type0015.md3" />
+    <None Remove="md3\Type0016.md3" />
+    <None Remove="md3\Type0017.md3" />
+    <None Remove="md3\Type0018.md3" />
+    <None Remove="md3\Type0019.md3" />
+    <None Remove="md3\Type0021.md3" />
+    <None Remove="md3\Type0022.md3" />
+    <None Remove="md3\Type0023.md3" />
+    <None Remove="md3\Type0024.md3" />
+    <None Remove="md3\Type0025.md3" />
+    <None Remove="md3\Type0026.md3" />
+    <None Remove="md3\Type0027.md3" />
+    <None Remove="md3\Type0028.md3" />
+    <None Remove="md3\Type0029.md3" />
+    <None Remove="md3\Type0030.md3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="MacroRail.ico" />
+    <Content Include="md3\NkdPTP.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\NkRoyalmile.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0001.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0002.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0003.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0004.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0005.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0006.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0007.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0008.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0009.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0010.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0011.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0012.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0013.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0014.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0015.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0016.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0017.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0018.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0019.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0021.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0022.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0023.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0024.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0025.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0026.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0027.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0028.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0029.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="md3\Type0030.md3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -52,6 +178,12 @@
     <Reference Include="nikoncswrapper">
       <HintPath>nikoncswrapper\nikoncswrapper_v2.1\bin\Release\nikoncswrapper.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="md3\dnssd.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -99,7 +231,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy &quot;$(ProjectDir)md3\*.*&quot; &quot;$(TargetDir)md3\&quot;&#xD;&#xA;copy &quot;$(TargetDir)md3\*.dll&quot; &quot;$(TargetDir)&quot;" />
+    <Exec Command="copy &quot;$(TargetDir)md3\*.dll&quot; &quot;$(TargetDir)&quot;" />
   </Target>
 
 </Project>

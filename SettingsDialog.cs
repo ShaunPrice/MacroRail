@@ -7,8 +7,6 @@ MacroRail is distributed in the hope that it will be useful, but WITHOUT ANY WAR
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with Foobar. If not, see <https://www.gnu.org/licenses/>.
 */
-using System;
-using System.Windows.Forms;
 
 namespace MacroRail
 {
@@ -23,7 +21,7 @@ namespace MacroRail
         uint m_total_steps_rev = 0;
         uint m_steps_mm = 0;
         uint m_max_speed = 100000000;
-        uint m_jog_speed = 20;
+        uint m_jog_speed = 20000000;
 
         public SettingsDialog()
         {
@@ -118,6 +116,12 @@ namespace MacroRail
             set { m_gear_ratio = value; }
         }
 
+        public uint JogSpeed
+        {
+            get { return m_jog_speed; }
+            set { m_jog_speed = value; }
+        }
+
         private void SettingsDialog_Load(object sender, EventArgs e)
         {
             textBoxThreadPitch.Text = m_pitch.ToString();
@@ -127,66 +131,106 @@ namespace MacroRail
             textBoxGearRatio.Text = m_gear_ratio.ToString();
             textBoxMaxSpeed.Text = m_max_speed.ToString();
             textBoxStepsMM.Text = m_steps_mm.ToString();
+            textBoxJogSpeed.Text = (((double)m_jog_speed/(double)m_max_speed) * 100).ToString("###0");
         }
 
         private void textBoxJogSpeed_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            try
-            {
-                m_jog_speed = uint.Parse(textBoxJogSpeed.Text);
-            }
-            catch
+            uint previous = m_jog_speed;
+            uint jogspeed = m_jog_speed;
+
+            if (!uint.TryParse(textBoxJogSpeed.Text, out jogspeed))
             {
                 e.Cancel = true;
             }
+
+            if (jogspeed > 100 || jogspeed < 0)
+            {
+                m_jog_speed = previous;
+                e.Cancel = true;
+            }
+
+            // Calculate the jog speed in steps
+            m_jog_speed = (uint)Math.Round((double)jogspeed / 100 * m_max_speed);
         }
 
         private void textBoxThreadPitch_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            try
+            uint previous = m_pitch;
+
+            if (!uint.TryParse(textBoxThreadPitch.Text, out m_pitch))
             {
-                m_pitch = uint.Parse(textBoxThreadPitch.Text);
+                e.Cancel = true;
             }
-            catch
+
+            if (m_pitch <= 0 || m_pitch > 100) 
             {
+                m_pitch = previous;
                 e.Cancel = true;
             }
         }
 
         private void textBoxGearRatio_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            try
+            uint previous = m_gear_ratio;
+
+            if (!uint.TryParse(textBoxGearRatio.Text, out m_gear_ratio))
             {
-                m_gear_ratio = uint.Parse(textBoxGearRatio.Text);
+                e.Cancel = true;
             }
-            catch
+
+            if (m_gear_ratio > 1000 || m_gear_ratio <= 0)
             {
+                m_gear_ratio = previous;
                 e.Cancel = true;
             }
         }
 
         private void textBoxStepsMM_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            try
+            uint previous = m_steps_mm;
+
+            if (!uint.TryParse(textBoxStepsMM.Text, out m_steps_mm))
             {
-                m_steps_mm = uint.Parse(textBoxStepsMM.Text);
+                e.Cancel = true;
             }
-            catch
+
+            if (m_steps_mm <= 0)
             {
+                m_steps_mm = previous;
                 e.Cancel = true;
             }
         }
 
         private void textBoxMaxSpeed_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            try
-            {
-                m_max_speed = uint.Parse(textBoxMaxSpeed.Text);
-            }
-            catch
+            uint previous = m_max_speed;
+
+            if (!uint.TryParse(textBoxMaxSpeed.Text, out m_max_speed))
             {
                 e.Cancel = true;
             }
+
+            if (m_max_speed <= 0)
+            {
+                m_max_speed = previous;
+                e.Cancel = true;
+            }
+        }
+
+        private void comboBoxThreadStarts_SelectedValueChanged(object sender, EventArgs e)
+        {
+            uint.TryParse(comboBoxThreadStarts.SelectedItem.ToString(), out m_thread_starts);
+        }
+
+        private void comboBoxStepsPerRevolution_SelectedValueChanged(object sender, EventArgs e)
+        {
+            uint.TryParse(comboBoxStepsPerRevolution.SelectedItem.ToString(), out m_steps_rev);
+        }
+
+        private void comboBoxMicrosteps_SelectedValueChanged(object sender, EventArgs e)
+        {
+            uint.TryParse(comboBoxMicrosteps.SelectedItem.ToString(), out m_microsteps);
         }
     }
 }
