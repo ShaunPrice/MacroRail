@@ -1725,7 +1725,7 @@ namespace MacroRail
 
                     string json = File.ReadAllText(dialog.FileName);
 
-                    Project project = FromNullable(JsonConvert.DeserializeObject<Project>(json));
+                    project = FromNullable(JsonConvert.DeserializeObject<Project>(json));
 
                     // Camera Settings
                     if (project is not null && project.sequence is not null && project.camera is not null)
