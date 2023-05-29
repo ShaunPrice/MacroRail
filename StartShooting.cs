@@ -8,6 +8,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public 
 You should have received a copy of the GNU General Public License along with Foobar. If not, see <https://www.gnu.org/licenses/>.
 */
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace MacroRail
@@ -125,12 +126,50 @@ namespace MacroRail
 
         private void textBoxShootVersion_TextChanged(object sender, EventArgs e)
         {
+            char[] invalidFileNameChars = Path.GetInvalidFileNameChars();
+            if (invalidFileNameChars.Any(textBoxShootName.Text.Contains))
+            {
+                textBoxShootName.ForeColor = Color.Red;
+            }
+            else
+            {
+                textBoxShootName.ForeColor = SystemColors.WindowText;
+            }
+
             m_shoot_version = (string)textBoxShootVersion.Text;
         }
 
         private void textBoxShootName_TextChanged(object sender, EventArgs e)
         {
+            char[] invalidFileNameChars = Path.GetInvalidFileNameChars();
+            if (invalidFileNameChars.Any(((TextBox)sender).Text.Contains))
+            {
+                ((TextBox)sender).ForeColor = Color.Red;
+            }
+            else
+            {
+                ((TextBox)sender).ForeColor = SystemColors.WindowText;
+            }
+
             m_shoot_name = (string)textBoxShootName.Text;
+        }
+
+        private void textBoxShootName_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            char[] invalidFileNameChars = Path.GetInvalidFileNameChars();
+            if (invalidFileNameChars.Any(textBoxShootName.Text.Contains))
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private void textBoxShootVersion_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            char[] invalidFileNameChars = Path.GetInvalidFileNameChars();
+            if (invalidFileNameChars.Any(textBoxShootVersion.Text.Contains))
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

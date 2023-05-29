@@ -28,133 +28,142 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBoxProjectName = new System.Windows.Forms.TextBox();
-            this.textBoxDescription = new System.Windows.Forms.TextBox();
-            this.labelDescription = new System.Windows.Forms.Label();
-            this.textBoxVersion = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.buttonCancel = new System.Windows.Forms.Button();
-            this.buttonSave = new System.Windows.Forms.Button();
-            this.SuspendLayout();
+            backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            label1 = new Label();
+            textBoxProjectName = new TextBox();
+            textBoxDescription = new TextBox();
+            labelDescription = new Label();
+            textBoxVersion = new TextBox();
+            label3 = new Label();
+            saveFileDialog = new SaveFileDialog();
+            buttonCancel = new Button();
+            buttonSave = new Button();
+            SuspendLayout();
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 13);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(104, 20);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Project Name";
+            label1.AutoSize = true;
+            label1.Location = new Point(14, 16);
+            label1.Name = "label1";
+            label1.Size = new Size(118, 25);
+            label1.TabIndex = 0;
+            label1.Text = "Project Name";
             // 
             // textBoxProjectName
             // 
-            this.textBoxProjectName.Location = new System.Drawing.Point(143, 13);
-            this.textBoxProjectName.Name = "textBoxProjectName";
-            this.textBoxProjectName.Size = new System.Drawing.Size(416, 26);
-            this.textBoxProjectName.TabIndex = 1;
-            this.textBoxProjectName.Text = "Macro Project";
+            textBoxProjectName.Location = new Point(159, 16);
+            textBoxProjectName.Margin = new Padding(3, 4, 3, 4);
+            textBoxProjectName.Name = "textBoxProjectName";
+            textBoxProjectName.Size = new Size(462, 31);
+            textBoxProjectName.TabIndex = 1;
+            textBoxProjectName.Text = "Macro Project";
+            textBoxProjectName.TextChanged += textBoxProjectName_TextChanged;
+            textBoxProjectName.Validating += textBoxProjectName_Validating;
             // 
             // textBoxDescription
             // 
-            this.textBoxDescription.Location = new System.Drawing.Point(143, 45);
-            this.textBoxDescription.Name = "textBoxDescription";
-            this.textBoxDescription.Size = new System.Drawing.Size(416, 26);
-            this.textBoxDescription.TabIndex = 3;
+            textBoxDescription.Location = new Point(159, 56);
+            textBoxDescription.Margin = new Padding(3, 4, 3, 4);
+            textBoxDescription.Name = "textBoxDescription";
+            textBoxDescription.Size = new Size(462, 31);
+            textBoxDescription.TabIndex = 3;
+            textBoxDescription.TextChanged += textBoxDescription_TextChanged;
             // 
             // labelDescription
             // 
-            this.labelDescription.AutoSize = true;
-            this.labelDescription.Location = new System.Drawing.Point(13, 45);
-            this.labelDescription.Name = "labelDescription";
-            this.labelDescription.Size = new System.Drawing.Size(89, 20);
-            this.labelDescription.TabIndex = 2;
-            this.labelDescription.Text = "Description";
+            labelDescription.AutoSize = true;
+            labelDescription.Location = new Point(14, 56);
+            labelDescription.Name = "labelDescription";
+            labelDescription.Size = new Size(102, 25);
+            labelDescription.TabIndex = 2;
+            labelDescription.Text = "Description";
             // 
             // textBoxVersion
             // 
-            this.textBoxVersion.Location = new System.Drawing.Point(143, 77);
-            this.textBoxVersion.Name = "textBoxVersion";
-            this.textBoxVersion.Size = new System.Drawing.Size(416, 26);
-            this.textBoxVersion.TabIndex = 5;
-            this.textBoxVersion.Text = "0.1.0";
+            textBoxVersion.Location = new Point(159, 96);
+            textBoxVersion.Margin = new Padding(3, 4, 3, 4);
+            textBoxVersion.Name = "textBoxVersion";
+            textBoxVersion.Size = new Size(462, 31);
+            textBoxVersion.TabIndex = 5;
+            textBoxVersion.Text = "0.1.0";
+            textBoxVersion.TextChanged += textBoxVersion_TextChanged;
+            textBoxVersion.Validating += textBoxVersion_Validating;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(13, 77);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(116, 20);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Project Version";
+            label3.AutoSize = true;
+            label3.Location = new Point(14, 96);
+            label3.Name = "label3";
+            label3.Size = new Size(129, 25);
+            label3.TabIndex = 4;
+            label3.Text = "Project Version";
             // 
             // saveFileDialog
             // 
-            this.saveFileDialog.CheckFileExists = true;
-            this.saveFileDialog.DefaultExt = "project";
-            this.saveFileDialog.FileName = "macro";
-            this.saveFileDialog.Filter = "Macro Project|*.project|All Files|*.*";
+            saveFileDialog.CheckFileExists = true;
+            saveFileDialog.DefaultExt = "project";
+            saveFileDialog.FileName = "macro";
+            saveFileDialog.Filter = "Macro Project|*.project|All Files|*.*";
             // 
             // buttonCancel
             // 
-            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(403, 127);
-            this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(75, 34);
-            this.buttonCancel.TabIndex = 6;
-            this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.UseVisualStyleBackColor = true;
+            buttonCancel.DialogResult = DialogResult.Cancel;
+            buttonCancel.Location = new Point(448, 159);
+            buttonCancel.Margin = new Padding(3, 4, 3, 4);
+            buttonCancel.Name = "buttonCancel";
+            buttonCancel.Size = new Size(83, 42);
+            buttonCancel.TabIndex = 6;
+            buttonCancel.Text = "Cancel";
+            buttonCancel.UseVisualStyleBackColor = true;
             // 
             // buttonSave
             // 
-            this.buttonSave.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonSave.Location = new System.Drawing.Point(484, 127);
-            this.buttonSave.Name = "buttonSave";
-            this.buttonSave.Size = new System.Drawing.Size(75, 34);
-            this.buttonSave.TabIndex = 7;
-            this.buttonSave.Text = "Save";
-            this.buttonSave.UseVisualStyleBackColor = true;
-            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            buttonSave.Location = new Point(538, 159);
+            buttonSave.Margin = new Padding(3, 4, 3, 4);
+            buttonSave.Name = "buttonSave";
+            buttonSave.Size = new Size(83, 42);
+            buttonSave.TabIndex = 7;
+            buttonSave.Text = "Save";
+            buttonSave.UseVisualStyleBackColor = true;
+            buttonSave.Click += buttonSave_Click;
             // 
             // SaveAs
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(578, 205);
-            this.ControlBox = false;
-            this.Controls.Add(this.buttonSave);
-            this.Controls.Add(this.buttonCancel);
-            this.Controls.Add(this.textBoxVersion);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.textBoxDescription);
-            this.Controls.Add(this.labelDescription);
-            this.Controls.Add(this.textBoxProjectName);
-            this.Controls.Add(this.label1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "SaveAs";
-            this.ShowIcon = false;
-            this.Text = "Save As";
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
+            CancelButton = buttonCancel;
+            ClientSize = new Size(642, 256);
+            ControlBox = false;
+            Controls.Add(buttonSave);
+            Controls.Add(buttonCancel);
+            Controls.Add(textBoxVersion);
+            Controls.Add(label3);
+            Controls.Add(textBoxDescription);
+            Controls.Add(labelDescription);
+            Controls.Add(textBoxProjectName);
+            Controls.Add(label1);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            Margin = new Padding(3, 4, 3, 4);
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "SaveAs";
+            ShowIcon = false;
+            Text = "Save As";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBoxProjectName;
-        private System.Windows.Forms.TextBox textBoxDescription;
-        private System.Windows.Forms.Label labelDescription;
-        private System.Windows.Forms.TextBox textBoxVersion;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog;
-        private System.Windows.Forms.Button buttonCancel;
-        private System.Windows.Forms.Button buttonSave;
+        private Label label1;
+        private TextBox textBoxProjectName;
+        private TextBox textBoxDescription;
+        private Label labelDescription;
+        private TextBox textBoxVersion;
+        private Label label3;
+        private SaveFileDialog saveFileDialog;
+        private Button buttonCancel;
+        private Button buttonSave;
     }
 }

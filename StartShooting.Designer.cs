@@ -28,269 +28,278 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBoxShootDirectory = new System.Windows.Forms.TextBox();
-            this.textBoxShootName = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.textBoxShootVersion = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.labelStepCount = new System.Windows.Forms.Label();
-            this.labelStepSize = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.labelCamera = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.labelShutterSpeed = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.labelApeture = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.labelSensitivity = new System.Windows.Forms.Label();
-            this.buttonCancel = new System.Windows.Forms.Button();
-            this.buttonStart = new System.Windows.Forms.Button();
-            this.folderBrowserDialogProject = new System.Windows.Forms.FolderBrowserDialog();
-            this.buttonSetProjectDirectory = new System.Windows.Forms.Button();
-            this.SuspendLayout();
+            label1 = new Label();
+            textBoxShootDirectory = new TextBox();
+            textBoxShootName = new TextBox();
+            label3 = new Label();
+            textBoxShootVersion = new TextBox();
+            label4 = new Label();
+            labelStepCount = new Label();
+            labelStepSize = new Label();
+            label5 = new Label();
+            label6 = new Label();
+            label7 = new Label();
+            labelCamera = new Label();
+            label9 = new Label();
+            labelShutterSpeed = new Label();
+            label11 = new Label();
+            labelApeture = new Label();
+            label8 = new Label();
+            labelSensitivity = new Label();
+            buttonCancel = new Button();
+            buttonStart = new Button();
+            folderBrowserDialogProject = new FolderBrowserDialog();
+            buttonSetProjectDirectory = new Button();
+            SuspendLayout();
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 79);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(126, 20);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Images directory";
+            label1.AutoSize = true;
+            label1.Location = new Point(13, 99);
+            label1.Name = "label1";
+            label1.Size = new Size(145, 25);
+            label1.TabIndex = 0;
+            label1.Text = "Images directory";
             // 
             // textBoxShootDirectory
             // 
-            this.textBoxShootDirectory.Location = new System.Drawing.Point(146, 76);
-            this.textBoxShootDirectory.Name = "textBoxShootDirectory";
-            this.textBoxShootDirectory.Size = new System.Drawing.Size(408, 26);
-            this.textBoxShootDirectory.TabIndex = 1;
-            this.textBoxShootDirectory.TextChanged += new System.EventHandler(this.textBoxShootDirectory_TextChanged);
+            textBoxShootDirectory.Location = new Point(162, 95);
+            textBoxShootDirectory.Margin = new Padding(3, 4, 3, 4);
+            textBoxShootDirectory.Name = "textBoxShootDirectory";
+            textBoxShootDirectory.Size = new Size(453, 31);
+            textBoxShootDirectory.TabIndex = 1;
+            textBoxShootDirectory.TextChanged += textBoxShootDirectory_TextChanged;
             // 
             // textBoxShootName
             // 
-            this.textBoxShootName.Location = new System.Drawing.Point(146, 12);
-            this.textBoxShootName.Name = "textBoxShootName";
-            this.textBoxShootName.Size = new System.Drawing.Size(438, 26);
-            this.textBoxShootName.TabIndex = 5;
-            this.textBoxShootName.TextChanged += new System.EventHandler(this.textBoxShootName_TextChanged);
+            textBoxShootName.ForeColor = SystemColors.WindowText;
+            textBoxShootName.Location = new Point(162, 15);
+            textBoxShootName.Margin = new Padding(3, 4, 3, 4);
+            textBoxShootName.Name = "textBoxShootName";
+            textBoxShootName.Size = new Size(486, 31);
+            textBoxShootName.TabIndex = 5;
+            textBoxShootName.TextChanged += textBoxShootName_TextChanged;
+            textBoxShootName.Validating += textBoxShootName_Validating;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 15);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(98, 20);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Shoot Name";
+            label3.AutoSize = true;
+            label3.Location = new Point(13, 19);
+            label3.Name = "label3";
+            label3.Size = new Size(112, 25);
+            label3.TabIndex = 4;
+            label3.Text = "Shoot Name";
             // 
             // textBoxShootVersion
             // 
-            this.textBoxShootVersion.Location = new System.Drawing.Point(146, 44);
-            this.textBoxShootVersion.Name = "textBoxShootVersion";
-            this.textBoxShootVersion.Size = new System.Drawing.Size(438, 26);
-            this.textBoxShootVersion.TabIndex = 6;
-            this.textBoxShootVersion.TextChanged += new System.EventHandler(this.textBoxShootVersion_TextChanged);
+            textBoxShootVersion.Location = new Point(162, 55);
+            textBoxShootVersion.Margin = new Padding(3, 4, 3, 4);
+            textBoxShootVersion.Name = "textBoxShootVersion";
+            textBoxShootVersion.Size = new Size(486, 31);
+            textBoxShootVersion.TabIndex = 6;
+            textBoxShootVersion.TextChanged += textBoxShootVersion_TextChanged;
+            textBoxShootVersion.Validating += textBoxShootVersion_Validating;
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 47);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(110, 20);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "Shoot Version";
+            label4.AutoSize = true;
+            label4.Location = new Point(13, 59);
+            label4.Name = "label4";
+            label4.Size = new Size(123, 25);
+            label4.TabIndex = 7;
+            label4.Text = "Shoot Version";
             // 
             // labelStepCount
             // 
-            this.labelStepCount.Location = new System.Drawing.Point(142, 116);
-            this.labelStepCount.Name = "labelStepCount";
-            this.labelStepCount.Size = new System.Drawing.Size(200, 20);
-            this.labelStepCount.TabIndex = 8;
-            this.labelStepCount.Text = "0";
+            labelStepCount.Location = new Point(158, 145);
+            labelStepCount.Name = "labelStepCount";
+            labelStepCount.Size = new Size(222, 25);
+            labelStepCount.TabIndex = 8;
+            labelStepCount.Text = "0";
             // 
             // labelStepSize
             // 
-            this.labelStepSize.Location = new System.Drawing.Point(142, 148);
-            this.labelStepSize.Name = "labelStepSize";
-            this.labelStepSize.Size = new System.Drawing.Size(200, 20);
-            this.labelStepSize.TabIndex = 9;
-            this.labelStepSize.Text = "0";
+            labelStepSize.Location = new Point(158, 185);
+            labelStepSize.Name = "labelStepSize";
+            labelStepSize.Size = new Size(222, 25);
+            labelStepSize.TabIndex = 9;
+            labelStepSize.Text = "0";
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(12, 148);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(124, 20);
-            this.label5.TabIndex = 11;
-            this.label5.Text = "Step Size (mm):";
+            label5.Location = new Point(13, 185);
+            label5.Name = "label5";
+            label5.Size = new Size(138, 25);
+            label5.TabIndex = 11;
+            label5.Text = "Step Size (mm):";
             // 
             // label6
             // 
-            this.label6.Location = new System.Drawing.Point(12, 116);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(124, 20);
-            this.label6.TabIndex = 10;
-            this.label6.Text = "Image Count:";
+            label6.Location = new Point(13, 145);
+            label6.Name = "label6";
+            label6.Size = new Size(138, 25);
+            label6.TabIndex = 10;
+            label6.Text = "Image Count:";
             // 
             // label7
             // 
-            this.label7.Location = new System.Drawing.Point(12, 179);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(124, 20);
-            this.label7.TabIndex = 13;
-            this.label7.Text = "Camera:";
+            label7.Location = new Point(13, 224);
+            label7.Name = "label7";
+            label7.Size = new Size(138, 25);
+            label7.TabIndex = 13;
+            label7.Text = "Camera:";
             // 
             // labelCamera
             // 
-            this.labelCamera.Location = new System.Drawing.Point(142, 179);
-            this.labelCamera.Name = "labelCamera";
-            this.labelCamera.Size = new System.Drawing.Size(200, 20);
-            this.labelCamera.TabIndex = 12;
-            this.labelCamera.Text = "none";
+            labelCamera.Location = new Point(158, 224);
+            labelCamera.Name = "labelCamera";
+            labelCamera.Size = new Size(222, 25);
+            labelCamera.TabIndex = 12;
+            labelCamera.Text = "none";
             // 
             // label9
             // 
-            this.label9.Location = new System.Drawing.Point(12, 212);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(124, 20);
-            this.label9.TabIndex = 15;
-            this.label9.Text = "Shutter Speed:";
+            label9.Location = new Point(13, 265);
+            label9.Name = "label9";
+            label9.Size = new Size(138, 25);
+            label9.TabIndex = 15;
+            label9.Text = "Shutter Speed:";
             // 
             // labelShutterSpeed
             // 
-            this.labelShutterSpeed.Location = new System.Drawing.Point(142, 212);
-            this.labelShutterSpeed.Name = "labelShutterSpeed";
-            this.labelShutterSpeed.Size = new System.Drawing.Size(200, 20);
-            this.labelShutterSpeed.TabIndex = 14;
-            this.labelShutterSpeed.Text = "none";
+            labelShutterSpeed.Location = new Point(158, 265);
+            labelShutterSpeed.Name = "labelShutterSpeed";
+            labelShutterSpeed.Size = new Size(222, 25);
+            labelShutterSpeed.TabIndex = 14;
+            labelShutterSpeed.Text = "none";
             // 
             // label11
             // 
-            this.label11.Location = new System.Drawing.Point(12, 242);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(124, 20);
-            this.label11.TabIndex = 17;
-            this.label11.Text = "Apeture:";
+            label11.Location = new Point(13, 302);
+            label11.Name = "label11";
+            label11.Size = new Size(138, 25);
+            label11.TabIndex = 17;
+            label11.Text = "Apeture:";
             // 
             // labelApeture
             // 
-            this.labelApeture.Location = new System.Drawing.Point(142, 242);
-            this.labelApeture.Name = "labelApeture";
-            this.labelApeture.Size = new System.Drawing.Size(200, 20);
-            this.labelApeture.TabIndex = 16;
-            this.labelApeture.Text = "none";
+            labelApeture.Location = new Point(158, 302);
+            labelApeture.Name = "labelApeture";
+            labelApeture.Size = new Size(222, 25);
+            labelApeture.TabIndex = 16;
+            labelApeture.Text = "none";
             // 
             // label8
             // 
-            this.label8.Location = new System.Drawing.Point(12, 273);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(124, 20);
-            this.label8.TabIndex = 19;
-            this.label8.Text = "Sensitivity (ISO):";
+            label8.Location = new Point(13, 341);
+            label8.Name = "label8";
+            label8.Size = new Size(138, 25);
+            label8.TabIndex = 19;
+            label8.Text = "Sensitivity (ISO):";
             // 
             // labelSensitivity
             // 
-            this.labelSensitivity.Location = new System.Drawing.Point(142, 273);
-            this.labelSensitivity.Name = "labelSensitivity";
-            this.labelSensitivity.Size = new System.Drawing.Size(200, 20);
-            this.labelSensitivity.TabIndex = 18;
-            this.labelSensitivity.Text = "none";
+            labelSensitivity.Location = new Point(158, 341);
+            labelSensitivity.Name = "labelSensitivity";
+            labelSensitivity.Size = new Size(222, 25);
+            labelSensitivity.TabIndex = 18;
+            labelSensitivity.Text = "none";
             // 
             // buttonCancel
             // 
-            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(408, 258);
-            this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(75, 35);
-            this.buttonCancel.TabIndex = 20;
-            this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.UseVisualStyleBackColor = true;
+            buttonCancel.DialogResult = DialogResult.Cancel;
+            buttonCancel.Location = new Point(453, 322);
+            buttonCancel.Margin = new Padding(3, 4, 3, 4);
+            buttonCancel.Name = "buttonCancel";
+            buttonCancel.Size = new Size(83, 44);
+            buttonCancel.TabIndex = 20;
+            buttonCancel.Text = "Cancel";
+            buttonCancel.UseVisualStyleBackColor = true;
             // 
             // buttonStart
             // 
-            this.buttonStart.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonStart.Location = new System.Drawing.Point(503, 258);
-            this.buttonStart.Name = "buttonStart";
-            this.buttonStart.Size = new System.Drawing.Size(81, 35);
-            this.buttonStart.TabIndex = 21;
-            this.buttonStart.Text = "Start";
-            this.buttonStart.UseVisualStyleBackColor = true;
-            this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
+            buttonStart.DialogResult = DialogResult.OK;
+            buttonStart.Location = new Point(559, 322);
+            buttonStart.Margin = new Padding(3, 4, 3, 4);
+            buttonStart.Name = "buttonStart";
+            buttonStart.Size = new Size(90, 44);
+            buttonStart.TabIndex = 21;
+            buttonStart.Text = "Start";
+            buttonStart.UseVisualStyleBackColor = true;
+            buttonStart.Click += buttonStart_Click;
             // 
             // buttonSetProjectDirectory
             // 
-            this.buttonSetProjectDirectory.AutoSize = true;
-            this.buttonSetProjectDirectory.Location = new System.Drawing.Point(557, 76);
-            this.buttonSetProjectDirectory.Name = "buttonSetProjectDirectory";
-            this.buttonSetProjectDirectory.Size = new System.Drawing.Size(31, 30);
-            this.buttonSetProjectDirectory.TabIndex = 22;
-            this.buttonSetProjectDirectory.Text = "...";
-            this.buttonSetProjectDirectory.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.buttonSetProjectDirectory.UseVisualStyleBackColor = true;
-            this.buttonSetProjectDirectory.Click += new System.EventHandler(this.buttonSetProjectDirectory_Click);
+            buttonSetProjectDirectory.AutoSize = true;
+            buttonSetProjectDirectory.Location = new Point(619, 95);
+            buttonSetProjectDirectory.Margin = new Padding(3, 4, 3, 4);
+            buttonSetProjectDirectory.Name = "buttonSetProjectDirectory";
+            buttonSetProjectDirectory.Size = new Size(34, 38);
+            buttonSetProjectDirectory.TabIndex = 22;
+            buttonSetProjectDirectory.Text = "...";
+            buttonSetProjectDirectory.TextAlign = ContentAlignment.TopCenter;
+            buttonSetProjectDirectory.UseVisualStyleBackColor = true;
+            buttonSetProjectDirectory.Click += buttonSetProjectDirectory_Click;
             // 
             // StartShooting
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(614, 326);
-            this.Controls.Add(this.buttonSetProjectDirectory);
-            this.Controls.Add(this.buttonStart);
-            this.Controls.Add(this.buttonCancel);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.labelSensitivity);
-            this.Controls.Add(this.label11);
-            this.Controls.Add(this.labelApeture);
-            this.Controls.Add(this.label9);
-            this.Controls.Add(this.labelShutterSpeed);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.labelCamera);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.labelStepSize);
-            this.Controls.Add(this.labelStepCount);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.textBoxShootVersion);
-            this.Controls.Add(this.textBoxShootName);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.textBoxShootDirectory);
-            this.Controls.Add(this.label1);
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "StartShooting";
-            this.ShowIcon = false;
-            this.Text = "Start Shooting";
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(682, 408);
+            Controls.Add(buttonSetProjectDirectory);
+            Controls.Add(buttonStart);
+            Controls.Add(buttonCancel);
+            Controls.Add(label8);
+            Controls.Add(labelSensitivity);
+            Controls.Add(label11);
+            Controls.Add(labelApeture);
+            Controls.Add(label9);
+            Controls.Add(labelShutterSpeed);
+            Controls.Add(label7);
+            Controls.Add(labelCamera);
+            Controls.Add(label5);
+            Controls.Add(label6);
+            Controls.Add(labelStepSize);
+            Controls.Add(labelStepCount);
+            Controls.Add(label4);
+            Controls.Add(textBoxShootVersion);
+            Controls.Add(textBoxShootName);
+            Controls.Add(label3);
+            Controls.Add(textBoxShootDirectory);
+            Controls.Add(label1);
+            Margin = new Padding(3, 4, 3, 4);
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "StartShooting";
+            ShowIcon = false;
+            Text = "Start Shooting";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBoxShootDirectory;
-        private System.Windows.Forms.TextBox textBoxShootName;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBoxShootVersion;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label labelStepCount;
-        private System.Windows.Forms.Label labelStepSize;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label labelCamera;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label labelShutterSpeed;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label labelApeture;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label labelSensitivity;
-        private System.Windows.Forms.Button buttonCancel;
-        private System.Windows.Forms.Button buttonStart;
-        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogProject;
-        private System.Windows.Forms.Button buttonSetProjectDirectory;
+        private Label label1;
+        private TextBox textBoxShootDirectory;
+        private TextBox textBoxShootName;
+        private Label label3;
+        private TextBox textBoxShootVersion;
+        private Label label4;
+        private Label labelStepCount;
+        private Label labelStepSize;
+        private Label label5;
+        private Label label6;
+        private Label label7;
+        private Label labelCamera;
+        private Label label9;
+        private Label labelShutterSpeed;
+        private Label label11;
+        private Label labelApeture;
+        private Label label8;
+        private Label labelSensitivity;
+        private Button buttonCancel;
+        private Button buttonStart;
+        private FolderBrowserDialog folderBrowserDialogProject;
+        private Button buttonSetProjectDirectory;
     }
 }

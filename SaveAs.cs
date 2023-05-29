@@ -8,6 +8,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public 
 You should have received a copy of the GNU General Public License along with Foobar. If not, see <https://www.gnu.org/licenses/>.
 */
 using System;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace MacroRail
@@ -41,12 +42,71 @@ namespace MacroRail
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "Macro Slider Project (*.proj)|*.proj|Any|*.*";
             saveFileDialog.FileName = m_project + "_" + m_version + ".proj";
-            saveFileDialog.ShowDialog();
 
-            m_filename = saveFileDialog.FileName;
-            m_project = textBoxProjectName.Text;
-            m_description = textBoxDescription.Text;
-            m_version = (string)textBoxVersion.Text;
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                m_filename = saveFileDialog.FileName;
+                m_project = textBoxProjectName.Text;
+                m_description = textBoxDescription.Text;
+                m_version = (string)textBoxVersion.Text;
+                
+                DialogResult = DialogResult.OK;
+            }
+            else
+            {
+                DialogResult = DialogResult.Cancel;
+            }
+        }
+
+        private void textBoxProjectName_TextChanged(object sender, EventArgs e)
+        {
+            char[] invalidFileNameChars = Path.GetInvalidFileNameChars();
+            if (invalidFileNameChars.Any(((TextBox)sender).Text.Contains))
+            {
+                ((TextBox)sender).ForeColor = Color.Red;
+            }
+            else
+            {
+                ((TextBox)sender).ForeColor = SystemColors.WindowText;
+            }
+            m_project = (string)textBoxProjectName.Text;
+        }
+
+        private void textBoxDescription_TextChanged(object sender, EventArgs e)
+        {
+            m_description += textBoxDescription.Text;
+        }
+
+        private void textBoxVersion_TextChanged(object sender, EventArgs e)
+        {
+            char[] invalidFileNameChars = Path.GetInvalidFileNameChars();
+            if (invalidFileNameChars.Any(((TextBox)sender).Text.Contains))
+            {
+                ((TextBox)sender).ForeColor = Color.Red;
+            }
+            else
+            {
+                ((TextBox)sender).ForeColor = SystemColors.WindowText;
+            }
+            m_version += textBoxVersion.Text;
+        }
+
+        private void textBoxProjectName_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            char[] invalidFileNameChars = Path.GetInvalidFileNameChars();
+            if (invalidFileNameChars.Any(textBoxProjectName.Text.Contains))
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private void textBoxVersion_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            char[] invalidFileNameChars = Path.GetInvalidFileNameChars();
+            if (invalidFileNameChars.Any(textBoxVersion.Text.Contains))
+            {
+                e.Cancel = true;
+            }
         }
 
         public string ProjectName

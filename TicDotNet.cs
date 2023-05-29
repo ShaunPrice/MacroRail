@@ -452,12 +452,13 @@ class Tic
     #region TRANSFERS
     bool transfer(int request_type = 0x40, int request = 0, int value = 0, int index = 0)
     {
-        if (MyUsbDevice == null)
-        {
-            throw new Exception("Device not connected");
-        }
         try
         {
+            if (MyUsbDevice == null)
+            {
+                throw new Exception("Device not connected");
+            }
+
             int transferred;
             UsbSetupPacket setup = new UsbSetupPacket((byte)request_type, (byte)request, value, index, 0);
             return MyUsbDevice.ControlTransfer(ref setup, null, 0, out transferred);

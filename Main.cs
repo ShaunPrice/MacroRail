@@ -7,21 +7,11 @@ MacroRail is distributed in the hope that it will be useful, but WITHOUT ANY WAR
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with Foobar. If not, see <https://www.gnu.org/licenses/>.
 */
-using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using Nikon;
-using System;
-using System.CodeDom;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Media;
-using System.Runtime.InteropServices.JavaScript;
-using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MacroRail
 {
@@ -83,9 +73,9 @@ namespace MacroRail
             ToggleButtons(false);
 
             // Set Start, Stop, Pause buttons to grayed out
-            buttonStart.BackColor = System.Drawing.Color.LightGray;
-            buttonStop.BackColor = System.Drawing.Color.LightGray;
-            buttonPause.BackColor = System.Drawing.Color.LightGray;
+            buttonStart.BackColor = Color.LightGray;
+            buttonStop.BackColor = Color.LightGray;
+            buttonPause.BackColor = Color.LightGray;
 
             // Initialize live view timer
             liveViewTimer = new System.Windows.Forms.Timer();
@@ -658,7 +648,7 @@ namespace MacroRail
                     if (image != null)
                     {
                         MemoryStream stream = new MemoryStream(image.JpegBuffer);
-                        pictureBox.Image = System.Drawing.Image.FromStream(stream);
+                        pictureBox.Image = Image.FromStream(stream);
                     }
                     break;
                 }
@@ -1332,12 +1322,15 @@ namespace MacroRail
                     shoot.tic.set_target_velocity(0);
 
                     StatusTIC(shoot.tic_name + " ready");
-                    labelTICConnection.ForeColor = System.Drawing.Color.Green;
+                    labelTICConnection.ForeColor = Color.Green;
                     labelTICConnection.Text = "Connected";
                     buttonTICConnect.Text = "TIC Disconnect";
 
                     buttonTICResume.Enabled = true;
+
                     buttonTICDeEnergize.Enabled = true;
+                    buttonTICDeEnergize.BackColor = Color.Red;
+                    buttonTICDeEnergize.ForeColor = Color.White;
 
                     // Only enable if the camera is available or we don't want to shoot
                     if (m_camera_available || (bool)project.sequence.NoShooting)
@@ -1346,39 +1339,51 @@ namespace MacroRail
                     }
                     buttonStop.Enabled = false;
                     buttonPause.Enabled = false;
+
                     buttonSetZero.Enabled = true;
                     buttonGoStart.Enabled = true;
+
                     buttonJogBackward.Enabled = true;
                     buttonJogForward.Enabled = true;
 
-                    buttonStart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-                    buttonStop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-                    buttonPause.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+                    buttonStart.BackColor = Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+                    buttonStop.BackColor = Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+                    buttonPause.BackColor = Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
                 }
                 else
                 {
                     shoot.tic.deenergize();
                     shoot.tic.close();
 
-                    labelTICConnection.ForeColor = System.Drawing.Color.Red;
+                    labelTICConnection.ForeColor = Color.Red;
                     labelTICConnection.Text = "Disconnected";
                     buttonTICConnect.Text = "TIC Connect";
                     StatusTIC("Disconnected");
                     shoot.tic_connected = false;
 
                     buttonTICResume.Enabled = false;
+                    buttonTICResume.ForeColor = SystemColors.ControlText;
+                    buttonTICResume.BackColor = SystemColors.Control;
+
                     buttonTICDeEnergize.Enabled = false;
+                    buttonTICDeEnergize.ForeColor = SystemColors.ControlText;
+                    buttonTICDeEnergize.BackColor = SystemColors.Control;
+
+                    buttonTICConnect.BackColor = SystemColors.Control;
+
                     buttonStart.Enabled = false;
                     buttonStop.Enabled = false;
                     buttonPause.Enabled = false;
+
                     buttonSetZero.Enabled = false;
                     buttonGoStart.Enabled = false;
+
                     buttonJogBackward.Enabled = false;
                     buttonJogForward.Enabled = false;
 
-                    buttonStart.BackColor = System.Drawing.Color.LightGray;
-                    buttonStop.BackColor = System.Drawing.Color.LightGray;
-                    buttonPause.BackColor = System.Drawing.Color.LightGray;
+                    buttonStart.BackColor = SystemColors.Control;
+                    buttonStop.BackColor = SystemColors.Control;
+                    buttonPause.BackColor = SystemColors.Control;
                 }
             }
             catch (Exception ex)
@@ -1445,6 +1450,29 @@ namespace MacroRail
             shoot.tic.exit_safe_start();
             StatusTIC("Waiting for TIC ready state");
             shoot.tic.wait_for_device_ready();
+
+            buttonTICDeEnergize.Enabled = true;
+            buttonTICDeEnergize.ForeColor = Color.White;
+            buttonTICDeEnergize.BackColor = Color.Red;
+
+            // Only enable if the camera is available or we don't want to shoot
+            if (m_camera_available || (bool)project.sequence.NoShooting)
+            {
+                buttonStart.Enabled = true;
+            }
+            buttonStop.Enabled = false;
+            buttonPause.Enabled = false;
+
+            buttonSetZero.Enabled = true;
+            buttonGoStart.Enabled = true;
+
+            buttonJogBackward.Enabled = true;
+            buttonJogForward.Enabled = true;
+
+            buttonStart.BackColor = Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            buttonStop.BackColor = Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            buttonPause.BackColor = Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+
             StatusTIC("TIC stepper driver resumed");
         }
 
@@ -1594,6 +1622,7 @@ namespace MacroRail
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveAs saveAsDialog = new SaveAs(project.Name, project.Description, project.Version, m_project_filename);
+
             if (saveAsDialog.ShowDialog() == DialogResult.OK)
             {
                 m_project_filename = saveAsDialog.Filename;
@@ -1681,6 +1710,7 @@ namespace MacroRail
 
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Filter = "Macro Slider Project (*.proj)|*.proj|Any|*.*";
+
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 try
@@ -1751,7 +1781,31 @@ namespace MacroRail
         private void buttonTICDeEnergize_Click(object sender, EventArgs e)
         {
             StatusTIC("DeEnergizing TIC stepper controller");
+
             shoot.tic.deenergize();
+
+            buttonTICResume.Enabled = true;
+            buttonTICResume.ForeColor = Color.White;
+            buttonTICResume.BackColor = Color.Green;
+
+            buttonTICDeEnergize.Enabled = false;
+            buttonTICDeEnergize.ForeColor = SystemColors.ControlText;
+            buttonTICDeEnergize.BackColor = SystemColors.Control;
+
+            buttonStart.Enabled = false;
+            buttonStop.Enabled = false;
+            buttonPause.Enabled = false;
+
+            buttonSetZero.Enabled = false;
+            buttonGoStart.Enabled = false;
+
+            buttonJogBackward.Enabled = false;
+            buttonJogForward.Enabled = false;
+
+            buttonStart.BackColor = SystemColors.Control;
+            buttonStop.BackColor = SystemColors.Control;
+            buttonPause.BackColor = SystemColors.Control;
+
             StatusTIC("DeEnergized");
         }
 
@@ -2322,7 +2376,7 @@ namespace MacroRail
                 checkBoxNoShooting.Checked = true;
                 checkBoxNoShooting.Enabled = false;
             }
-            else if((bool)FromNullable(project.sequence.ManualShooting) && !shoot.tic_connected)
+            else if ((bool)FromNullable(project.sequence.ManualShooting) && !shoot.tic_connected)
             {
                 buttonStart.Enabled = false;
                 checkBoxNoShooting.Checked = true;

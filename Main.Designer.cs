@@ -502,17 +502,17 @@ namespace MacroRail
             // 
             // buttonTICDeEnergize
             // 
-            buttonTICDeEnergize.BackColor = Color.Red;
+            buttonTICDeEnergize.BackColor = SystemColors.Control;
             buttonTICDeEnergize.Enabled = false;
             buttonTICDeEnergize.Font = new Font("Microsoft Sans Serif", 8F, FontStyle.Bold, GraphicsUnit.Point);
-            buttonTICDeEnergize.ForeColor = Color.White;
+            buttonTICDeEnergize.ForeColor = SystemColors.ControlText;
             buttonTICDeEnergize.Location = new Point(1656, 262);
             buttonTICDeEnergize.Margin = new Padding(0);
             buttonTICDeEnergize.Name = "buttonTICDeEnergize";
             buttonTICDeEnergize.Size = new Size(278, 50);
             buttonTICDeEnergize.TabIndex = 19;
             buttonTICDeEnergize.Text = "TIC De-energize";
-            buttonTICDeEnergize.UseVisualStyleBackColor = false;
+            buttonTICDeEnergize.UseVisualStyleBackColor = true;
             buttonTICDeEnergize.Click += buttonTICDeEnergize_Click;
             // 
             // buttonTICResume

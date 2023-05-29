@@ -7,21 +7,28 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>MacroRail.ico</ApplicationIcon>
-    <AssemblyVersion>0.2.0</AssemblyVersion>
+    <AssemblyVersion>0.2.1</AssemblyVersion>
     <Copyright>Copyright © Shaun Price 2023</Copyright>
-    <Description>Macro photography application fpr Nikon cmaera and Pololu TIC stepper controllers.</Description>
+    <Description>Macro photography application for Nikon camaeras and Pololu TIC stepper controllers.</Description>
     <PackageProjectUrl>https://github.com/ShaunPrice/MacroRail/</PackageProjectUrl>
     <Title>MacroRail</Title>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/ShaunPrice/MacroRail/</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <FileVersion>0.2.0</FileVersion>
+    <FileVersion>0.2.1</FileVersion>
     <PackageLicenseFile>LICENCE</PackageLicenseFile>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="dependancies\**" />
+    <Compile Remove="dependencies\**" />
     <Compile Remove="nikoncswrapper\**" />
+    <EmbeddedResource Remove="dependancies\**" />
+    <EmbeddedResource Remove="dependencies\**" />
     <EmbeddedResource Remove="nikoncswrapper\**" />
+    <None Remove="dependancies\**" />
+    <None Remove="dependencies\**" />
     <None Remove="nikoncswrapper\**" />
   </ItemGroup>
 
@@ -70,21 +77,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="images\MacroRail_Connected.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\MacroRail_Not_Connected.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\MacroRail_Save_As.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\MacroRail_Settings.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\MacroRail_Start_Shooting.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="LICENCE">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -200,7 +192,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy &quot;$(TargetDir)\md3\*.dll&quot; &quot;$(TargetDir)&quot;" />
+    <Exec Command="copy &quot;$(TargetDir)md3\*.dll&quot; &quot;$(TargetDir)&quot;" />
   </Target>
 
 </Project>
