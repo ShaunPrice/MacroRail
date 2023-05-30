@@ -44,7 +44,7 @@ namespace MacroRail
         Shoot shoot;
         Project project;
 
-        public Main()
+        public Main(string[] args)
         {
             InitializeComponent();
 
@@ -130,6 +130,16 @@ namespace MacroRail
             ///
             Status("Nikon Initialise Complete");
             shoot.tic = new Tic();
+
+
+            // If there's a command line argumet see it it a .prog file and try to load it
+            if (args.Length >= 1)
+            {
+                if (args[0].EndsWith(".proj"))
+                {
+                    openProject(args[0]);
+                }
+            }
         }
 
         private void Status(string message)
@@ -177,7 +187,11 @@ namespace MacroRail
 
         void manager_DeviceAdded(NikonManager sender, NikonDevice device)
         {
-            this._devices.Add(device);
+            try
+            {
+                this._devices.Add(device);
+            }
+            catch { }
 
             // Set the device name
             project.camera.Name = device.Name;
@@ -206,6 +220,10 @@ namespace MacroRail
             catch (NikonException ex)
             {
                 Status("Nikon Error while retrieving battery capability & setting: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Status("Error while retrieving battery capability & setting: " + ex.Message);
             }
 
             // Auto Focus
@@ -1637,7 +1655,7 @@ namespace MacroRail
                 project.Version = saveAsDialog.Version;
 
                 saveProject();
-
+                SetTitle();
                 m_project_saved = true;
                 saveToolStripMenuItem.Enabled = true;
             }
@@ -1689,6 +1707,8 @@ namespace MacroRail
 
                 saveToolStripMenuItem.Enabled = true;
 
+                SetTitle();
+
                 Status("Project saved");
             }
             catch (IOException ex)
@@ -1706,75 +1726,6 @@ namespace MacroRail
             catch (Exception ex)
             {
                 Status($"An error occurred: {ex.Message}");
-            }
-        }
-
-
-        private void openProject()
-        {
-            Status("Opening project");
-
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filter = "Macro Slider Project (*.proj)|*.proj|Any|*.*";
-
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                try
-                {
-                    m_project_filename = dialog.FileName;
-
-                    string json = File.ReadAllText(dialog.FileName);
-
-                    project = FromNullable(JsonConvert.DeserializeObject<Project>(json));
-
-                    // Camera Settings
-                    if (project is not null && project.sequence is not null && project.camera is not null)
-                    {
-                        comboBoxCompression.SelectedItem = FromNullable(project.camera.Compression);
-                        comboBoxShutterSpeed.SelectedItem = FromNullable(project.camera.ShutterSpeed);
-                        comboBoxApeture.SelectedItem = FromNullable(project.camera.Apeture);
-                        checkBoxAutoISO.Checked = (bool)FromNullable(project.camera.AutoISO);
-                        comboBoxSensitivity.SelectedItem = FromNullable(project.camera.SensitivityISO);
-                        comboBoxFlashSyncTime.SelectedItem = FromNullable(project.camera.FlashSyncTime);
-                        comboBoxFlashSlowLimit.SelectedItem = FromNullable(project.camera.FlashSlowLimit);
-                        checkBoxExposureDelay.Checked = (bool)FromNullable(project.camera.ExposureDelay);
-                        checkBoxEnableCopyright.Checked = (bool)FromNullable(project.camera.EnableCopyright);
-                        textBoxArtistsName.Text = FromNullable(project.camera.ArtistsName);
-                        textBoxCopyrightInfo.Text = FromNullable(project.camera.Copyright);
-                        textBoxJogSpeed.Text = FromNullable(project.sequence.JogSpeed.ToString());
-                        checkBoxNoShooting.Checked = (bool)FromNullable(project.sequence.NoShooting);
-                        checkBoxManualShooting.Checked = (bool)FromNullable(project.sequence.ManualShooting);
-                        textBoxStepCount.Text = FromNullable(project.sequence.StepCount.ToString());
-                        textBoxStepSize.Text = FromNullable(project.sequence.StepDistance.ToString());
-                        textBoxDelayBeforeShooting.Text = FromNullable(project.sequence.DelayBeforeShooting.ToString());
-
-                        m_project_saved = true;
-
-                        saveToolStripMenuItem.Enabled = true;
-
-                        Status("Project opened");
-                    }
-                    else
-                    {
-                        Status("Error saving project. ");
-                    }
-                }
-                catch (FileNotFoundException ex)
-                {
-                    Status($"The file was not found: '{ex.FileName}'");
-                }
-                catch (IOException ex)
-                {
-                    Status($"An IO error occured: {ex.Message}");
-                }
-                catch (JsonException ex)
-                {
-                    Status($"Invalid JSON format: {ex.Message}");
-                }
-                catch (Exception ex)
-                {
-                    Status($"An error occured: {ex.Message}");
-                }
             }
         }
 
@@ -1822,11 +1773,6 @@ namespace MacroRail
             shoot.tic.set_target_position(shoot.start);
         }
 
-        private void textBoxStartPosition_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void buttonSetStart_Click(object sender, EventArgs e)
         {
             shoot.tic.halt_and_set_position(0);
@@ -1856,6 +1802,7 @@ namespace MacroRail
                 shoot.name = dialog.ShootName;
                 shoot.version = dialog.ShootVersion;
                 project.sequence.Directory = dialog.ShootDirectory;
+                SetTitle();
                 if (project.Directory == "") project.Directory = project.sequence.Directory;
                 shoot.sequence_status = shoot_status.Start;
 
@@ -2003,9 +1950,76 @@ namespace MacroRail
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            openProject();
+            Status("Opening project");
+
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "Macro Slider Project (*.proj)|*.proj|Any|*.*";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                openProject(dialog.FileName);
+            }
         }
 
+        private void openProject(string filename)
+        {
+            try
+            {
+
+                string json = File.ReadAllText(filename);
+
+                project = FromNullable(JsonConvert.DeserializeObject<Project>(json));
+
+                // Camera Settings
+                if (project is not null && project.sequence is not null && project.camera is not null)
+                {
+                    comboBoxCompression.SelectedItem = FromNullable(project.camera.Compression);
+                    comboBoxShutterSpeed.SelectedItem = FromNullable(project.camera.ShutterSpeed);
+                    comboBoxApeture.SelectedItem = FromNullable(project.camera.Apeture);
+                    checkBoxAutoISO.Checked = (bool)FromNullable(project.camera.AutoISO);
+                    comboBoxSensitivity.SelectedItem = FromNullable(project.camera.SensitivityISO);
+                    comboBoxFlashSyncTime.SelectedItem = FromNullable(project.camera.FlashSyncTime);
+                    comboBoxFlashSlowLimit.SelectedItem = FromNullable(project.camera.FlashSlowLimit);
+                    checkBoxExposureDelay.Checked = (bool)FromNullable(project.camera.ExposureDelay);
+                    checkBoxEnableCopyright.Checked = (bool)FromNullable(project.camera.EnableCopyright);
+                    textBoxArtistsName.Text = FromNullable(project.camera.ArtistsName);
+                    textBoxCopyrightInfo.Text = FromNullable(project.camera.Copyright);
+                    textBoxJogSpeed.Text = FromNullable(project.sequence.JogSpeed.ToString());
+                    checkBoxNoShooting.Checked = (bool)FromNullable(project.sequence.NoShooting);
+                    checkBoxManualShooting.Checked = (bool)FromNullable(project.sequence.ManualShooting);
+                    textBoxStepCount.Text = FromNullable(project.sequence.StepCount.ToString());
+                    textBoxStepSize.Text = FromNullable(project.sequence.StepDistance.ToString());
+                    textBoxDelayBeforeShooting.Text = FromNullable(project.sequence.DelayBeforeShooting.ToString());
+
+                    m_project_saved = true;
+                    m_project_filename = filename;
+                    SetTitle();
+                    saveToolStripMenuItem.Enabled = true;
+
+                    Status("Project opened");
+                }
+                else
+                {
+                    Status("Error saving project. ");
+                }
+            }
+            catch (FileNotFoundException ex)
+            {
+                Status($"The file was not found: '{ex.FileName}'");
+            }
+            catch (IOException ex)
+            {
+                Status($"An IO error occured: {ex.Message}");
+            }
+            catch (JsonException ex)
+            {
+                Status($"Invalid JSON format: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Status($"An error occured: {ex.Message}");
+            }
+        }
         private void textBoxJogSpeed_TextChanged(object sender, EventArgs e)
         {
             if (!int.TryParse(textBoxJogSpeed.Text, out int _))
@@ -2399,6 +2413,13 @@ namespace MacroRail
         {
             AboutBox1 aboutBox = new AboutBox1();
             aboutBox.ShowDialog();
+        }
+
+        public void SetTitle()
+        {
+            this.Text = "MacroRail" + ((project.Name != "") ? " - Project: " + project.Name
+                    + " (" + Path.GetFileName(m_project_filename) + ")" : "")
+                    + ((shoot.name != "") ? " - Shoot: " + shoot.name : "");
         }
 
         public static T FromNullable<T>(T value)

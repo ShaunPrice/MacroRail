@@ -27,7 +27,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutBox1));
             tableLayoutPanel = new TableLayoutPanel();
             logoPictureBox = new PictureBox();
             labelProductName = new Label();
@@ -69,7 +68,7 @@
             // logoPictureBox
             // 
             logoPictureBox.Dock = DockStyle.Fill;
-            logoPictureBox.Image = (Image)resources.GetObject("logoPictureBox.Image");
+            logoPictureBox.Image = Properties.Resources.About;
             logoPictureBox.Location = new Point(4, 6);
             logoPictureBox.Margin = new Padding(4, 6, 4, 6);
             logoPictureBox.Name = "logoPictureBox";
