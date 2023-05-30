@@ -46,9 +46,9 @@ namespace MacroRail
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 m_filename = saveFileDialog.FileName;
-                m_project = textBoxProjectName.Text;
-                m_description = textBoxDescription.Text;
-                m_version = (string)textBoxVersion.Text;
+                m_project = m_project;
+                m_description = m_description;
+                m_version = m_version;
 
                 DialogResult = DialogResult.OK;
             }
@@ -68,8 +68,8 @@ namespace MacroRail
             else
             {
                 ((TextBox)sender).ForeColor = SystemColors.WindowText;
+                m_project = (string)textBoxProjectName.Text;
             }
-            m_project = (string)textBoxProjectName.Text;
         }
 
         private void textBoxDescription_TextChanged(object sender, EventArgs e)
@@ -87,8 +87,8 @@ namespace MacroRail
             else
             {
                 ((TextBox)sender).ForeColor = SystemColors.WindowText;
+                m_version += textBoxVersion.Text;
             }
-            m_version += textBoxVersion.Text;
         }
 
         private void textBoxProjectName_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -115,19 +115,19 @@ namespace MacroRail
             set { m_project = value; }
         }
 
-        public string Description
+        public string ProjectDescription
         {
             get { return m_description; }
             set { m_description = value; }
         }
 
-        public string Version
+        public string ProjectVersion
         {
             get { return m_version; }
             set { m_version = value; }
         }
 
-        public string Filename
+        public string ProjectFilename
         {
             get { return m_filename; }
             set { m_filename = value; }

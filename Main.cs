@@ -238,6 +238,10 @@ namespace MacroRail
             {
                 Status("Nikon Error while retrieving auto focus capability: " + ex.Message);
             }
+            catch (Exception ex)
+            {
+                Status("Error while retrieving auto focus capability: " + ex.Message);
+            }
 
             // Compression Control
             try
@@ -261,6 +265,10 @@ namespace MacroRail
             catch (NikonException ex)
             {
                 Status("Nikon Error while retrieving image compression capability & setting: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Status("Error while retrieving image compression capability & setting: " + ex.Message);
             }
 
             // Shutter Speed Control
@@ -292,6 +300,10 @@ namespace MacroRail
             {
                 Status("Nikon Error while retrieving shutter speed capability & setting: " + ex.Message);
             }
+            catch (Exception ex)
+            {
+                Status("Error while retrieving shutter speed capability & setting: " + ex.Message);
+            }
 
             // Apeture Control
             try
@@ -321,6 +333,10 @@ namespace MacroRail
             catch (NikonException ex)
             {
                 Status("Nikon Error while retrieving apeture capability & setting: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Status("Error while retrieving apeture capability & setting: " + ex.Message);
             }
 
             // Sensitivity Control
@@ -352,6 +368,10 @@ namespace MacroRail
             {
                 Status("Nikon Error while retrieving sentitivity (ISO) capability & setting: " + ex.Message);
             }
+            catch (Exception ex)
+            {
+                Status("Error while retrieving sentitivity (ISO) capability & setting: " + ex.Message);
+            }
 
             // Auto ISO Control
             try
@@ -374,6 +394,10 @@ namespace MacroRail
             catch (NikonException ex)
             {
                 Status("Nikon Error while retrieving auto ISO capability & setting: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Status("Error while retrieving auto ISO capability & setting: " + ex.Message);
             }
 
             // Flash Sync Time Control
@@ -399,6 +423,10 @@ namespace MacroRail
             {
                 Status("Nikon Error while retrieving flash sync time capability & setting: " + ex.Message);
             }
+            catch (Exception ex)
+            {
+                Status("Error while retrieving flash sync time capability & setting: " + ex.Message);
+            }
 
             // Flash Slow Limit Control
             try
@@ -423,6 +451,10 @@ namespace MacroRail
             {
                 Status("Nikon Error while retrieving flash slow limit capability & setting: " + ex.Message);
             }
+            catch (Exception ex)
+            {
+                Status("Error while retrieving flash slow limit capability & setting: " + ex.Message);
+            }
 
             // Exposure Delay
             try
@@ -438,6 +470,10 @@ namespace MacroRail
             catch (NikonException ex)
             {
                 Status("Nikon Error while retrieving exposure delay capability & setting: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Status("Error while retrieving exposure delay capability & setting: " + ex.Message);
             }
 
             // Copyright Enable Control
@@ -474,6 +510,10 @@ namespace MacroRail
             catch (NikonException ex)
             {
                 Status("Nikon Error while retrieving copyright capability & setting: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Status("Error while retrieving copyright capability & setting: " + ex.Message);
             }
 
             // Hook up device capture events
@@ -661,6 +701,9 @@ namespace MacroRail
                     catch (NikonException)
                     {
                         liveViewTimer.Stop();
+                    }
+                    catch
+                    {
                     }
 
                     // Set captured image on picture box
@@ -925,6 +968,10 @@ namespace MacroRail
             {
                 Status("Nikon Error while enabling preview: " + ex.Message);
             }
+            catch (Exception ex)
+            {
+                Status("Error while enabling preview: " + ex.Message);
+            }
         }
         private void buttonCapture_Click(object sender, EventArgs e)
         {
@@ -1022,6 +1069,11 @@ namespace MacroRail
                     {
                         Status("Nikon Error while retrieving auto focus capability: " + ex.Message);
                     }
+                    catch (Exception ex)
+                    {
+                        Status("Error while retrieving auto focus capability: " + ex.Message);
+                    }
+
                     break;
                 }
             }
@@ -1649,10 +1701,10 @@ namespace MacroRail
 
             if (saveAsDialog.ShowDialog() == DialogResult.OK)
             {
-                m_project_filename = saveAsDialog.Filename;
-                project.Name = saveAsDialog.ProductName;
-                project.Description = saveAsDialog.Description;
-                project.Version = saveAsDialog.Version;
+                m_project_filename = saveAsDialog.ProjectFilename;
+                project.Name = saveAsDialog.ProjectName;
+                project.Description = saveAsDialog.ProjectDescription;
+                project.Version = saveAsDialog.ProjectVersion;
 
                 saveProject();
                 SetTitle();
@@ -2279,18 +2331,13 @@ namespace MacroRail
             labelRunStatus.Text = "Shot " + count.ToString() + " of " + shots.ToString() + " - " + status.ToString();
         }
 
-        private void checkBoxStackPreview_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void textBoxDelayBeforeShooting_Validating(object sender, CancelEventArgs e)
         {
             try
             {
                 project.sequence.DelayBeforeShooting = UInt32.Parse(textBoxDelayBeforeShooting.Text);
             }
-            catch (Exception)
+            catch
             {
                 e.Cancel = true;
             }
@@ -2302,7 +2349,7 @@ namespace MacroRail
             {
                 project.sequence.StepDistance = double.Parse(textBoxStepSize.Text);
             }
-            catch (Exception)
+            catch
             {
                 e.Cancel = true;
             }
@@ -2314,7 +2361,7 @@ namespace MacroRail
             {
                 project.sequence.StepCount = int.Parse(textBoxStepCount.Text);
             }
-            catch (Exception)
+            catch
             {
                 e.Cancel = true;
             }
@@ -2335,7 +2382,7 @@ namespace MacroRail
                     rail.jog_speed = (uint)(l_jogSpeed * (rail.max_speed / 100));
                 }
             }
-            catch (Exception)
+            catch
             {
                 e.Cancel = true;
             }
