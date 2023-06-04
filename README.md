@@ -139,9 +139,9 @@ You can purchase you stepper motor controller from Pololu who make the TIC versi
 
 The following are website for selecting and purchasing your TIC from Pololu:
 
-	Choose your Pololu TIC: https://www.pololu.com/category/212/tic-stepper-motor-controllers
-	TIC user 's guide: https://www.pololu.com/docs/0J71
-	TIC configuration software for Windows: https://www.pololu.com/docs/0J71/3.1
+Choose your Pololu TIC: https://www.pololu.com/category/212/tic-stepper-motor-controllers
+TIC user 's guide: https://www.pololu.com/docs/0J71
+TIC configuration software for Windows: https://www.pololu.com/docs/0J71/3.1
 
 **Note:**  The Pololu TIC can be run from many platforms, but at tis stage the application only runs on Windows x64bit due to the Nikon libraries used. This is planned to be changed in the future.
 
