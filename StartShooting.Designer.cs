@@ -218,7 +218,6 @@
             // 
             // buttonStart
             // 
-            buttonStart.DialogResult = DialogResult.OK;
             buttonStart.Location = new Point(559, 322);
             buttonStart.Margin = new Padding(3, 4, 3, 4);
             buttonStart.Name = "buttonStart";

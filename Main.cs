@@ -10,8 +10,10 @@ You should have received a copy of the GNU General Public License along with Foo
 using Newtonsoft.Json;
 using Nikon;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Media;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace MacroRail
 {
@@ -1628,34 +1630,21 @@ namespace MacroRail
                     break;
             }
 
-            /*
-            DoF = 2 * u * N * (m + 1) * C
+            CameraCalcs calcs = new CameraCalcs();
 
-            where:
-
-            u is the distance to the subject
-            N is the aperture (f - number)
-            m is the magnification, calculated as f / u, where f is the lens focal length
-            C is the circle of confusion
-            When using extension tubes, the magnification increases by e / f, where e is the length of the extension tube(s). So the new magnification m' is m + e / f.
-            */
-
-            // Calculate the original magnification
-            double magnification = l_focal_length / l_subject_distance;
-
-            // Add the increase in magnification from the extension tubes
-            magnification += l_macro_tube_size / l_focal_length;
-
-            // Calculate the depth of field
-            shoot.dof = 2 * l_subject_distance * l_aperture * (magnification + 1) * l_circle_confusion;
-
-            double l_shots_required = Math.Ceiling(l_subject_depth / (shoot.dof / 2));
-
-            double l_steps_distance = l_subject_depth / l_shots_required;
-
-            labelDOF.Text = shoot.dof.ToString("##0.000") + " mm Depth of Field";
-            labelShotsRequired.Text = l_shots_required.ToString("###0") + " shots recomended";
-            labelStepSizeRequired.Text = l_steps_distance.ToString("##0.000") + "mm per step";
+            if (calcs.Calculate(l_focal_length, l_macro_tube_size, l_aperture, l_circle_confusion, l_subject_distance, l_subject_depth))
+            {
+                labelDOF.Text = calcs.DepthOfField.ToString("##0.000") + " mm Depth of Field";
+                labelShotsRequired.Text = calcs.ShotsRequired.ToString("###0") + " shots recomended";
+                labelStepSizeRequired.Text = calcs.StepSize.ToString("##0.000") + "mm per step";
+            }
+            else
+            {
+                labelDOF.Text = "Error";
+                labelShotsRequired.Text = "Error";
+                labelStepSizeRequired.Text = "Error";
+            }
+            
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2118,6 +2107,7 @@ namespace MacroRail
                         }
                     }
                     catch (NikonException) { }
+                    catch (System.NullReferenceException) { }
                     catch { }
                 }
             }
@@ -2269,6 +2259,16 @@ namespace MacroRail
                     break;
                 case shoot_status.Move:
                     // Move to position and wait for callback
+
+                    // Reset the tic if there's an error. This could happen for long exposures.
+                    if (shoot.tic.status_vars.error_occurred != 0)
+                    {
+                        shoot.tic.clear_driver_error();
+                        shoot.tic.exit_safe_start();
+                        StatusTIC("Waiting for TIC ready state");
+                        shoot.tic.wait_for_device_ready();
+                    }
+
                     StatusLog("Starting move.", true);
                     int steps_to_move = (int)(rail.steps_mm * project.sequence.StepDistance);
                     shoot.current_position -= steps_to_move;
@@ -2292,6 +2292,16 @@ namespace MacroRail
                     timerProject.Stop();
 
                     StatusLog("Moving to start position.", true);
+
+                    // Reset the tic if there's an error. This could happen for long exposures.
+                    if (shoot.tic.status_vars.error_occurred != 0)
+                    {
+                        shoot.tic.clear_driver_error();
+                        shoot.tic.exit_safe_start();
+                        StatusTIC("Waiting for TIC ready state");
+                        shoot.tic.wait_for_device_ready();
+                    }
+
                     shoot.tic.set_target_position(0);
                     shoot.tic.wait_for_move_complete();
 

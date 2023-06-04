@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyVersion>0.2.2</AssemblyVersion>
+    <AssemblyVersion>0.3.0</AssemblyVersion>
     <Copyright>Copyright © Shaun Price 2023</Copyright>
     <Description>Macro photography application for Nikon camaeras and Pololu TIC stepper controllers.</Description>
     <PackageProjectUrl>https://github.com/ShaunPrice/MacroRail/</PackageProjectUrl>
@@ -14,26 +14,43 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/ShaunPrice/MacroRail/</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <FileVersion>0.2.2</FileVersion>
+    <FileVersion>0.3.0</FileVersion>
     <PackageLicenseFile>LICENCE</PackageLicenseFile>
     <PlatformTarget>x64</PlatformTarget>
     <Platforms>AnyCPU;x64</Platforms>
     <ApplicationIcon>Resources\MacroRail.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="dependancies\**" />
     <Compile Remove="dependencies\**" />
+    <Compile Remove="libraries\**" />
+    <Compile Remove="MigrationBackup\**" />
     <Compile Remove="nikoncswrapper\**" />
     <Compile Remove="splash_screen\**" />
+    <Compile Remove="ticdotnet\**" />
     <EmbeddedResource Remove="dependancies\**" />
     <EmbeddedResource Remove="dependencies\**" />
+    <EmbeddedResource Remove="libraries\**" />
+    <EmbeddedResource Remove="MigrationBackup\**" />
     <EmbeddedResource Remove="nikoncswrapper\**" />
     <EmbeddedResource Remove="splash_screen\**" />
+    <EmbeddedResource Remove="ticdotnet\**" />
     <None Remove="dependancies\**" />
     <None Remove="dependencies\**" />
+    <None Remove="libraries\**" />
+    <None Remove="MigrationBackup\**" />
     <None Remove="nikoncswrapper\**" />
     <None Remove="splash_screen\**" />
+    <None Remove="ticdotnet\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -76,7 +93,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Resources\MacroRail.ico" />
     <Content Include="md3\NkdPTP.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -170,6 +186,7 @@
     <Content Include="md3\Type0030.md3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\MacroRail.ico" />
   </ItemGroup>
 
   <ItemGroup>

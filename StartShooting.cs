@@ -61,13 +61,10 @@ namespace MacroRail
             m_shoot_version = textBoxShootVersion.Text.Trim();
             m_shoot_directory = textBoxShootDirectory.Text.Trim();
 
-            if (m_shoot_name == "" || m_shoot_directory == "" || m_shoot_version == "")
+            if (!(m_shoot_name.Trim() == "" || m_shoot_directory.Trim() == "" || m_shoot_version.Trim() == ""))
             {
-                buttonStart.DialogResult = DialogResult.Abort;
-            }
-            else
-            {
-                buttonStart.DialogResult = DialogResult.OK;
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
         }
 
