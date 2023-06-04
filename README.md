@@ -61,7 +61,7 @@ Open the application and turn on you camera. If the camera is supported and conn
 
 If one or more of the features is not supported, it will not be enabled. In the example below, the D800 does not support Exposure Delay via USB. The D800 does support exposure delay in camera of 1, 2, and 3 seconds but the Nikon SDK does not support USB control of the setting. If you would like to use it, you must enable it on the camera directly.
 
-![MacroRail Application with camera and TIC connected](/images/MacroRail_Not_Connected.png)
+![MacroRail Application with camera and TIC connected](/images/MacroRail_Connected.png)
 
 ### Configure the Application
 It is very important that these parameters are set before starting the stepper. After the Pololu stepper controller has be set up you need to set up these parameters so the applications knows the distances that will be moved per step.
