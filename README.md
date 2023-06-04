@@ -147,14 +147,22 @@ The following are website for selecting and purchasing your TIC from Pololu:
 
 My solution currently runs a [NEMA 23 stepper motor](https://www.makerstore.com.au/product/elec-nema23-635-b/) from the [Maker Store](https://www.makerstore.com.au/) in Australia. This motor is completely oversized for the applcation, but it's intended for other purposes othethan macro-protography.
 
-The rail I used is the [Maker Store](https://www.makerstore.com.au/) C-Beam Double-Wide 500 Actuator Kit](https://www.makerstore.com.au/product/kit-actuator-cb-d/), but if you're looking to buy one for yourself the 250mm kit should be fine for most applications.
+The rail I used is the [Maker Store](https://www.makerstore.com.au/) [C-Beam Double-Wide 500 Actuator Kit](https://www.makerstore.com.au/product/kit-actuator-cb-d/), but if you're looking to buy one for yourself the 250mm kit should be fine for most applications.
 
-![Macro Rail Hardware](/images/MacroRail_photo.png)
+![Macro Rail Hardware](/images/Macrorail_photo.png)
 
 For the front and rear limit switch I used a couple of normally open proximity sensors. These are connected to the TIC controller and are used to stop the camera at the front and rear of the rail. The proximity sensors are lj8a3-2-z/bx inductive proximity sensors. These are 5VDC sensors and are connected to the TIC controller TX & RX inputs.
 
-The settings from the TIC Control Center software from Pololu that I used are shown below. These are the settings that work for my setup, but you may need to change them for your setup.
+The settings from the TIC Control Center software from Pololu that I used are shown below - including the limit switches. These are the settings that work for my setup, but you may need to change them for your setup.
 
 ![Pololu TIC Control Center - Input & Motor Settings](/images/Pololu-TIC-Control-Center-Input-&-Motor-Settings.png)
 
 ![Pololu TIC Control Center - Advanced Settings](/images/Pololu-TIC-Control-Center-Advanced-Settings.png)
+
+## 3D Printed Parts
+
+While my set-up does use 3D printed parts they were very specific to my setu. I also made a lot of custom aluminium parts and Manfrotto quick release camera mount plate and a video head and mount plate, but you don't need all of these parts for a simple stepper solution. You don't require the limits and can turn them off in the Pololu TIC configuration if you don't use them.
+
+## Future releases
+
+At some point I'll make all the required Pololu TIC settings configurable from the application, but for now you'll need to use the Pololu TIC Control Center software to set them up.
