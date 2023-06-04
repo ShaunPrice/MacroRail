@@ -82,6 +82,8 @@ Clicking on "Calculate" will give you the "Steps per mm".
 
 Add the Maximum Speed in pulses per second. You'll know if it's set to high because the stepper will make a buzzing noise and won't move. Don't make it so quick that your camera flies off the macro rail.
 
+The Defaul Job Speed (%) sets the jog speed to the desired percentage of the maximum speed on start-up. The jog speed can be changed in the application main screen.
+
 Other setting are set up in the Pololu application for configuring the TIC. Make sure you use acceleration and de-acceleration values low enough that you won't be jerking the camera.
 
 **Note:** These setting are saved with the application.
@@ -123,5 +125,36 @@ Where:
 **Shoot Version:** Version information for your shoot. A subdirectory will be created in the image directory. If you don't change this for each shoot the files will be overwritten.<br/>
 **Images directory:** Root directory to save the images into. The image will be saved in the [images directory][Shoot Name]/[Shoot Version]/ directory. If you created or opened a project this will default to the project directory. If you haven't you will need to set this by typing in a directory or clicking on the button to the right of the text box "...".<br/>
 
-**Note:** If you're shooting JPEG images, either by themselves or with RAW images, the shot will be shown in the black area in the middle of the screen.
+**Note:** If you're shooting JPEG images, either by themselves or with RAW images, the shot will be shown in the image area in the middle of the screen.
 
+## About
+
+Provides information about the application, copyright, version, closed source libraries, and open source libraries used.
+
+![MacroRail Application Start Shooting dialog](/images/MacroRail_About.png)
+
+# Setting up you Pololu TIC Stepper Motor Controller
+
+You can purchase you stepper motor controller from Pololu who make the TIC version this application was designed to drive This controller has advanced features that allow you to control the stepper motor in a variety of ways.
+
+The following are website for selecting and purchasing your TIC from Pololu:
+
+	Choose your Pololu TIC: https://www.pololu.com/category/212/tic-stepper-motor-controllers
+	TIC user 's guide: https://www.pololu.com/docs/0J71
+	TIC configuration software for Windows: https://www.pololu.com/docs/0J71/3.1
+
+**Note:**  The Pololu TIC can be run from many platforms, but at tis stage the application only runs on Windows x64bit due to the Nikon libraries used. This is planned to be changed in the future.
+
+My solution currently runs a [NEMA 23 stepper motor](https://www.makerstore.com.au/product/elec-nema23-635-b/) from the [Maker Store](https://www.makerstore.com.au/) in Australia. This motor is completely oversized for the applcation, but it's intended for other purposes othethan macro-protography.
+
+The rail I used is the [Maker Store](https://www.makerstore.com.au/) C-Beam Double-Wide 500 Actuator Kit](https://www.makerstore.com.au/product/kit-actuator-cb-d/), but if you're looking to buy one for yourself the 250mm kit should be fine for most applications.
+
+![Macro Rail Hardware](/images/MacroRail_photo.png)
+
+For the front and rear limit switch I used a couple of normally open proximity sensors. These are connected to the TIC controller and are used to stop the camera at the front and rear of the rail. The proximity sensors are lj8a3-2-z/bx inductive proximity sensors. These are 5VDC sensors and are connected to the TIC controller TX & RX inputs.
+
+The settings from the TIC Control Center software from Pololu that I used are shown below. These are the settings that work for my setup, but you may need to change them for your setup.
+
+![Pololu TIC Control Center - Input & Motor Settings](/images/Pololu-TIC-Control-Center-Input-&-Motor-Settings.png)
+
+![Pololu TIC Control Center - Advanced Settings](/images/Pololu-TIC-Control-Center-Advanced-Settings.png)

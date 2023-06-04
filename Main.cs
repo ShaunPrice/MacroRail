@@ -1644,7 +1644,7 @@ namespace MacroRail
                 labelShotsRequired.Text = "Error";
                 labelStepSizeRequired.Text = "Error";
             }
-            
+
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2468,7 +2468,7 @@ namespace MacroRail
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AboutBox1 aboutBox = new AboutBox1();
+            AboutBox aboutBox = new AboutBox();
             aboutBox.ShowDialog();
         }
 

@@ -261,8 +261,9 @@ namespace MacroRail
             // 
             // pictureBox
             // 
-            pictureBox.BackColor = Color.Black;
+            pictureBox.BackColor = Color.FromArgb(12, 28, 15);
             pictureBox.Dock = DockStyle.Fill;
+            pictureBox.Image = Properties.Resources.Main;
             pictureBox.Location = new Point(281, 4);
             pictureBox.Margin = new Padding(3, 4, 3, 4);
             pictureBox.MinimumSize = new Size(356, 300);
@@ -1144,7 +1145,7 @@ namespace MacroRail
             // aboutToolStripMenuItem
             // 
             aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            aboutToolStripMenuItem.Size = new Size(164, 34);
+            aboutToolStripMenuItem.Size = new Size(270, 34);
             aboutToolStripMenuItem.Text = "&About";
             aboutToolStripMenuItem.Click += aboutToolStripMenuItem_Click;
             // 

@@ -69,5 +69,42 @@ namespace MacroRail.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Macro photography application for taking staked macro photographs using a Nikon camera and Pololu TIC stepper controllers (https://www.pololu.com/).
+        ///
+        ///Copyright (c) 2023 Shaun Price
+        ///
+        ///This file is part of MacroRail (https://github.com/ShaunPrice/MacroRail).
+        ///
+        ///MacroRail is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+        ///
+        ///MacroRail [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string AboutText {
+            get {
+                return ResourceManager.GetString("AboutText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon MacroRail {
+            get {
+                object obj = ResourceManager.GetObject("MacroRail", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Main {
+            get {
+                object obj = ResourceManager.GetObject("Main", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }
