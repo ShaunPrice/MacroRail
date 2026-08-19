@@ -5,3 +5,9 @@ opencv-python-headless>=4.7
 # Pololu TIC over USB (only needed for --backend tic)
 ticlib>=0.2.2
 pyusb>=1.2
+
+# Robotics / AI additions (see ROBOTICS.md)
+# ROS 2 (rclpy, tf2_ros, nav_msgs...) comes from your ROS distribution,
+# not pip - install ros-jazzy-ros-base or ros-humble-ros-base instead.
+# The Vitis AI runtime (vart, xir) ships with the board image / DPU-TRD;
+# vision.py falls back to OpenCV on the A53s when it is absent.

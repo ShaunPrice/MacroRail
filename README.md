@@ -1,7 +1,11 @@
 # MacroRail
 Macro photography application for Nikon cameras and [Pololu]( https://www.pololu.com/) TIC stepper controllers.
 
-**New:** [MacroRail96](ultra96/README.md) — run the rail standalone on an Avnet Ultra96-V2 FPGA board (WiFi web UI, hardware-timed stepping and camera triggering, on-board focus stacking). See the [ultra96](ultra96/) directory.
+**New:** [MacroRail96](ultra96/README.md) — run the rail standalone on an Avnet Ultra96-V2 FPGA board (WiFi web UI, hardware-timed stepping and camera triggering, on-board focus stacking).
+
+**Also new:** [Robotics and AI on the Ultra96-V2](ultra96/ROBOTICS.md) — a two-axis closed-loop motion controller (quadrature encoders, hardware PID, H-bridge PWM) behind a hardware safety core, with a ROS 2 node and a safety-gated vision pipeline.
+
+See the [ultra96](ultra96/) directory; `./ultra96/run_tests.sh` runs all simulations and tests without a board.
 
 Copyright (c) 2023 Shaun Price
 

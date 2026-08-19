@@ -153,6 +153,21 @@ your board revision before wiring.
 See `fpga/rtl/axi_stepper.v` and `software/macrorail96/registers.py` — they
 are kept in lock-step. Times are in cycles of the 100 MHz PL clock.
 
+## Robotics and AI on the same board
+
+The Ultra96-V2 is also a strong robotics controller, and that work lives
+alongside this one: see **[ROBOTICS.md](ROBOTICS.md)** for a two-axis
+closed-loop motion controller (quadrature encoders, hardware PID, H-bridge
+PWM with dead-time) fronted by a hardware safety core — E-stop, command
+watchdog, and a one-way speed-limit lock that software cannot raise — plus
+a ROS 2 differential-drive node and a safety-gated vision pipeline.
+
+The stepper peripheral here sits at 0xA000_0000 and the motion controller
+at 0xA001_0000, so both can be built into one bitstream if you want a
+camera rail and a rover on the same board.
+
+Run every simulation and test in this directory with `./run_tests.sh`.
+
 ## Other Ultra96-V2 project ideas for this rig
 
 - **Live focus peaking / autofocus metric in the PL**: take the camera's HDMI
