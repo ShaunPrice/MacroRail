@@ -1,0 +1,7 @@
+# MacroRail96 - Python dependencies for the Ultra96-V2
+flask>=2.2
+numpy>=1.24
+opencv-python-headless>=4.7
+# Pololu TIC over USB (only needed for --backend tic)
+ticlib>=0.2.2
+pyusb>=1.2

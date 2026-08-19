@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MacroRail96</title>
+<style>
+  :root { --accent: #2e7d32; --bg: #14161a; --card: #1e2127; --text: #e8eaed; }
+  * { box-sizing: border-box; font-family: system-ui, sans-serif; }
+  body { margin: 0; background: var(--bg); color: var(--text); }
+  header { padding: 14px 18px; background: var(--card); font-size: 1.25rem; font-weight: 600; }
+  header span { color: var(--accent); }
+  main { max-width: 560px; margin: 0 auto; padding: 16px; display: grid; gap: 14px; }
+  .card { background: var(--card); border-radius: 10px; padding: 14px 16px; }
+  .card h2 { margin: 0 0 10px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #9aa0a6; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  button { border: 0; border-radius: 8px; padding: 10px 14px; background: #33383f; color: var(--text); font-size: 0.95rem; cursor: pointer; }
+  button:active { transform: translateY(1px); }
+  button.go { background: var(--accent); }
+  button.stop { background: #c62828; }
+  input { width: 90px; padding: 8px; border-radius: 8px; border: 1px solid #3c4043; background: #0f1114; color: var(--text); }
+  label { font-size: 0.85rem; color: #9aa0a6; display: grid; gap: 4px; }
+  #position { font-size: 2rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  #message, #camera { color: #9aa0a6; font-size: 0.9rem; }
+  .limit { color: #ef9a9a; font-size: 0.85rem; display: none; }
+</style>
+</head>
+<body>
+<header>Macro<span>Rail</span>96</header>
+<main>
+  <div class="card">
+    <h2>Position</h2>
+    <div id="position">0.000 mm</div>
+    <div id="camera">camera: …</div>
+    <div id="message">idle</div>
+    <div class="limit" id="limit">⚠ halted on limit switch</div>
+  </div>
+
+  <div class="card">
+    <h2>Jog</h2>
+    <div class="row">
+      <button onclick="jog(-1)">−1 mm</button>
+      <button onclick="jog(-0.1)">−0.1</button>
+      <button onclick="jog(-0.01)">−0.01</button>
+      <button onclick="jog(0.01)">+0.01</button>
+      <button onclick="jog(0.1)">+0.1</button>
+      <button onclick="jog(1)">+1 mm</button>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button onclick="post('/api/zero')">Set start (zero)</button>
+      <button class="stop" onclick="post('/api/abort')">STOP</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Shoot</h2>
+    <div class="row">
+      <label>Step count <input id="step_count" type="number" value="20" min="1"></label>
+      <label>Step size (mm) <input id="step_size" type="number" value="0.10" step="0.01"></label>
+      <label>Name <input id="name" type="text" value="shoot"></label>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button class="go" onclick="startShoot()">Start shoot</button>
+    </div>
+  </div>
+</main>
+<script>
+async function post(url, body) {
+  const r = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body || {}),
+  });
+  return r.json();
+}
+function jog(mm) { post("/api/jog", { mm }); }
+function startShoot() {
+  post("/api/shoot", {
+    name: document.getElementById("name").value,
+    step_count: +document.getElementById("step_count").value,
+    step_size_mm: +document.getElementById("step_size").value,
+  });
+}
+async function poll() {
+  try {
+    const s = await (await fetch("/api/status")).json();
+    if (s.stepper && s.stepper.position_mm !== undefined)
+      document.getElementById("position").textContent =
+        s.stepper.position_mm.toFixed(3) + " mm";
+    document.getElementById("camera").textContent = "camera: " + (s.camera || "off");
+    document.getElementById("message").textContent = s.shoot.message;
+    document.getElementById("limit").style.display =
+      s.stepper && s.stepper.halted_on_limit ? "block" : "none";
+  } catch (e) { /* server restarting */ }
+  setTimeout(poll, 500);
+}
+poll();
+</script>
+</body>
+</html>
