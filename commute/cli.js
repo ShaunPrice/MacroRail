@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 // Usage: node cli.js [--from "..."] [--to "..."] [--depart HH:MM | --arrive HH:MM] [--date YYYY-MM-DD] [--rail] [--reverse] [--json]
+//        [--via "Epping Station; Hornsby Station"] [--park MINUTES] [--no-via]
+// With --reverse, the trip is public transport to the station then a drive home.
 // Coordinates starting with "-" must use the = form: --from=-33.8173,151.0053
 
 import { parseArgs } from 'node:util';
 import { loadConfig, createServices } from './lib/config.js';
 import { planCommute } from './lib/commute.js';
 import { formatTime, parseSydneyDateTime } from './lib/time.js';
+import { parseStationList } from './lib/parkride.js';
 
 const { values: args } = parseArgs({
   options: {
@@ -17,6 +20,9 @@ const { values: args } = parseArgs({
     rail: { type: 'boolean', default: false },
     reverse: { type: 'boolean', default: false },
     json: { type: 'boolean', default: false },
+    via: { type: 'string' },
+    park: { type: 'string' },
+    'no-via': { type: 'boolean', default: false },
   },
 });
 
@@ -35,6 +41,10 @@ const result = await planCommute({
   when: time ? parseSydneyDateTime(args.date, time) : new Date(),
   arriveBy,
   railOnly: args.rail,
+  // On the way home (--reverse) the car is parked at the destination end of the trip.
+  via: args['no-via'] ? [] : args.via != null ? parseStationList(args.via) : config.via,
+  parkAt: args.reverse ? 'end' : 'start',
+  parkMinutes: args.park != null ? Number(args.park) : config.parkMinutes,
 });
 
 if (args.json) {
@@ -63,6 +73,21 @@ for (const j of result.trips) {
   const legs = j.legs.filter((l) => l.mode !== 'Walk').map((l) => `${l.line ?? l.mode}`).join(' > ');
   const status = j.cancelled ? 'CANCELLED' : j.maxDelayMinutes > 0 ? `+${j.maxDelayMinutes} late` : j.realtime ? 'on time' : 'timetable';
   console.log(`  ${t(j.depart)} -> ${t(j.arrive)}  ${String(j.durationMinutes).padStart(3)} min  ${legs}  [${status}]`);
+}
+const transitLegs = (j) => j.legs.filter((l) => l.mode !== 'Walk').map((l) => `${l.line ?? l.mode}`).join(' > ');
+for (const s of result.parkRide) {
+  const title = result.query.parkAt === 'end' ? `PUBLIC TRANSPORT TO ${s.station.name.toUpperCase()} + DRIVE` : `DRIVE TO ${s.station.name.toUpperCase()} + PUBLIC TRANSPORT`;
+  console.log(`\n${title}`);
+  if (s.error) console.log(`  unavailable: ${s.error}`);
+  else if (!s.options.length) console.log('  no connecting services found');
+  for (const o of s.options) {
+    const status = o.cancelled ? 'CANCELLED' : o.trip.maxDelayMinutes > 0 ? `+${o.trip.maxDelayMinutes} late` : o.trip.realtime ? 'on time' : 'timetable';
+    console.log(`  leave ${t(o.depart)} -> arrive ${t(o.arrive)}  ${String(o.totalMinutes).padStart(3)} min  ` +
+      (o.catchBy
+        ? `drive ${o.drive.totalMinutes} + park ${o.parkMinutes} > ${transitLegs(o.trip)} (${t(o.trip.depart)})  [${status}]`
+        : `${transitLegs(o.trip)} (${t(o.trip.depart)}) > walk ${o.parkMinutes} + drive ${o.drive.totalMinutes}  [${status}]`));
+    for (const h of o.drive.hazards) console.log(`    ! ${h.headline}${h.delayMinutes ? ` (+${h.delayMinutes} min)` : ''}`);
+  }
 }
 if (result.errors.traffic) console.log(`\nNote: live traffic unavailable: ${result.errors.traffic}`);
 console.log();

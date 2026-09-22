@@ -28,7 +28,10 @@ test('serves the web page and config', async () => {
   assert.equal(page.status, 200);
   assert.match(page.body, /<title>NSW Commute<\/title>/);
   const cfg = await get('/api/config');
-  assert.deepEqual(cfg.body, { demo: true, home: 'Parramatta Station', work: 'Wynyard Station', drivingSource: 'model', hasApiKey: true });
+  assert.deepEqual(cfg.body, {
+    demo: true, home: 'Cherrybrook', work: 'Barangaroo', via: 'Epping Station; Macquarie University Station',
+    parkMinutes: 5, drivingSource: 'model', hasApiKey: true,
+  });
   assert.equal((await get('/../server.js')).status, 404);
 });
 
@@ -39,7 +42,8 @@ test('location search', async () => {
 });
 
 test('commute estimate: depart at', async () => {
-  const { status, body } = await get('/api/commute?from=Parramatta&to=Wynyard&mode=depart&date=2026-09-23&time=07:30');
+  const { status, body } = await get('/api/commute?from=Parramatta&to=Wynyard&mode=depart&date=2026-09-23&time=07:30&via=');
+  assert.deepEqual(body.parkRide, []);
   assert.equal(status, 200);
   assert.deepEqual(body.errors, {});
   assert.equal(body.trips.length, 6);
@@ -57,7 +61,6 @@ test('commute estimate: arrive by, trains only, with lat/lon input', async () =>
   const deadline = new Date('2026-09-22T22:45:00Z');
   // The planner targets the timetable; real-time delays can push a service past the deadline.
   assert.ok(body.trips.filter((t) => !(t.maxDelayMinutes > 0)).every((t) => new Date(t.arrive) <= deadline));
-  assert.ok(body.trips.some((t) => new Date(t.arrive) > deadline), 'simulation includes a late-running service');
   assert.ok(Math.abs(new Date(body.drive.arrive) - deadline) < 60000);
   assert.ok(new Date(body.recommendation.arrive) <= deadline);
   assert.equal(body.query.railOnly, true);

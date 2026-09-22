@@ -116,12 +116,11 @@ export class TfnswClient {
   }
 }
 
+// Prefer the TfNSW id (exact stop or address) over raw coordinates.
 function locationParams(prefix, loc) {
-  if (loc.coord) {
-    const [lat, lon] = loc.coord;
-    return { [`type_${prefix}`]: 'coord', [`name_${prefix}`]: `${lon}:${lat}:EPSG:4326` };
-  }
-  return { [`type_${prefix}`]: 'any', [`name_${prefix}`]: loc.id };
+  if (loc.id) return { [`type_${prefix}`]: 'any', [`name_${prefix}`]: loc.id };
+  const [lat, lon] = loc.coord;
+  return { [`type_${prefix}`]: 'coord', [`name_${prefix}`]: `${lon}:${lat}:EPSG:4326` };
 }
 
 function firstCoord(geometry) {

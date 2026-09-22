@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { loadConfig, createServices } from './lib/config.js';
 import { planCommute } from './lib/commute.js';
 import { parseSydneyDateTime } from './lib/time.js';
+import { parseStationList } from './lib/parkride.js';
 
 const PUBLIC_DIR = fileURLToPath(new URL('./public/', import.meta.url));
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml' };
@@ -22,6 +23,8 @@ export function createApp(config, services = createServices(config)) {
       demo: config.demo,
       home: config.home,
       work: config.work,
+      via: config.via.join('; '),
+      parkMinutes: config.parkMinutes,
       drivingSource: config.googleApiKey ? 'google' : 'model',
       hasApiKey: Boolean(config.tfnswApiKey),
     }),
@@ -33,6 +36,8 @@ export function createApp(config, services = createServices(config)) {
 
     '/api/commute': async (q) => {
       const arriveBy = q.get('mode') === 'arrive';
+      const park = Number(q.get('park') ?? config.parkMinutes);
+      if (!Number.isFinite(park) || park < 0 || park > 60) throw new Error('Park time must be between 0 and 60 minutes');
       const when = q.get('time') ? parseSydneyDateTime(q.get('date'), q.get('time')) : new Date();
       const result = await planCommute({
         client,
@@ -41,6 +46,9 @@ export function createApp(config, services = createServices(config)) {
         when,
         arriveBy,
         railOnly: q.get('railOnly') === '1',
+        via: parseStationList(q.has('via') ? q.get('via') : config.via),
+        parkMinutes: park,
+        parkAt: q.get('parkAt') === 'end' ? 'end' : 'start',
         getHazards,
         driveOptions,
       });

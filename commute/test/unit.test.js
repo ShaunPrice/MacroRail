@@ -116,6 +116,8 @@ test('TfnswClient sends the API key and Trip Planner parameters', async () => {
   assert.equal(q.get('name_destination'), '10101100');
   assert.equal(q.get('exclMOT_5'), '1');
   assert.equal(q.get('exclMOT_1'), null);
+  await client.planTrips({ from: { id: '2150172', coord: [-33.8, 151.0] }, to: { id: 'y' }, when: new Date() });
+  assert.equal(seen.url.searchParams.get('name_origin'), '2150172', 'a known stop id is preferred over coordinates');
   await assert.rejects(new TfnswClient({}).findLocations('x'), /TFNSW_API_KEY/);
 });
 

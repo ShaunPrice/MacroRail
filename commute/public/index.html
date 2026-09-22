@@ -19,6 +19,16 @@
         <label>From <input id="from" name="from" list="from-list" placeholder="Home address, suburb or station" required></label>
         <button type="button" id="swap" class="icon" title="Swap start and destination" aria-label="Swap start and destination">&#8645;</button>
         <label>To <input id="to" name="to" list="to-list" placeholder="Work address, suburb or station" required></label>
+        <label class="via">Park-and-ride station(s) <span class="hint">(optional; separate several with ;)</span>
+          <input id="via" name="via" placeholder="e.g. Epping Station; Hornsby Station"></label>
+        <div class="park">
+          <label>Car is <select id="parkAt" name="parkAt">
+            <option value="start">at the start (drive first)</option>
+            <option value="end">at the end (drive last)</option>
+          </select></label>
+          <label>Car ↔ platform <span class="hint">(min)</span>
+            <input id="park" name="park" type="number" min="0" max="60" step="1" value="5"></label>
+        </div>
         <datalist id="from-list"></datalist>
         <datalist id="to-list"></datalist>
       </div>
@@ -40,6 +50,10 @@
 
     <section id="results" hidden>
       <div id="recommendation" class="panel rec"></div>
+      <article id="parkride-panel" class="panel" hidden>
+        <h2 id="parkride-title">Drive to station + public transport</h2>
+        <div id="parkride" class="stations"></div>
+      </article>
       <div class="grid">
         <article class="panel">
           <h2>Drive</h2>

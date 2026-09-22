@@ -86,12 +86,61 @@ function statusBadge(j) {
   return '<span class="badge">Timetabled</span>';
 }
 
+const legLabel = (l) => (l.mode === 'Walk'
+  ? `<span class="leg Walk">Walk ${l.durationMinutes ?? ''}${l.durationMinutes != null ? 'm' : ''}</span>`
+  : `<span class="leg ${esc(l.mode)}" title="${esc(`${l.mode} towards ${l.towards ?? ''}`)}">${esc(l.line ?? l.mode)}</span>`);
+
+// Step-by-step list, including where to change services.
+function itinerary(j, prefix = [], suffix = []) {
+  const steps = [...prefix, ...j.legs.map((l) => (l.mode === 'Walk'
+    ? `Walk ${l.durationMinutes ?? ''} min to ${esc(l.to)}`
+    : `${fmt(l.depart)} ${esc(l.mode)} ${esc(l.line ?? '')} from ${esc(l.from)}${l.towards ? ` towards ${esc(l.towards)}` : ''}, arrive ${esc(l.to)} ${fmt(l.arrive)}${l.delayMinutes > 0 ? ` (${l.delayMinutes} min late)` : ''}`)), ...suffix];
+  return `<details class="itinerary"><summary>${j.interchanges ? `${j.interchanges} change${j.interchanges > 1 ? 's' : ''} · ` : ''}Show steps</summary><ol>${steps.map((s) => `<li>${s}</li>`).join('')}</ol></details>`;
+}
+
+function renderParkRide(stations, best, parkAt) {
+  return stations.map((s, si) => {
+    const body = s.error
+      ? `<p class="status error">${esc(s.error)}</p>`
+      : !s.options.length
+        ? '<p class="note">No connecting services found.</p>'
+        : `<ol class="trips">${s.options.map((o, i) => {
+          const isBest = best?.kind === 'parkride' && best.stationIndex === si && best.index === i;
+          const hazards = o.drive.hazards.map((h) => `<div class="alert">⚠ ${esc(h.headline)}${h.delayMinutes ? ` (+${h.delayMinutes} min)` : ''}</div>`).join('');
+          const driveFirst = parkAt !== 'end';
+          const driveStep = driveFirst
+            ? `${fmt(o.drive.depart)} Drive ${o.drive.totalMinutes} min (${o.drive.distanceKm} km) to ${esc(s.station.name)}`
+            : `${fmt(o.drive.depart)} Drive ${o.drive.totalMinutes} min (${o.drive.distanceKm} km), arrive ${fmt(o.arrive)}`;
+          const parkStep = driveFirst
+            ? `Park and walk to the platform, ${o.parkMinutes} min; be there by ${fmt(o.catchBy)}`
+            : `Walk to the car, ${o.parkMinutes} min`;
+          const carChips = driveFirst
+            ? [`<span class="leg Drive">Drive ${o.drive.totalMinutes}m</span>`, `<span class="leg Park">Park ${o.parkMinutes}m</span>`]
+            : [`<span class="leg Park">To car ${o.parkMinutes}m</span>`, `<span class="leg Drive">Drive ${o.drive.totalMinutes}m</span>`];
+          const transitChips = o.trip.legs.map(legLabel).join('');
+          return `
+            <li class="${isBest ? 'best' : ''} ${o.cancelled ? 'cancelled' : ''}">
+              <div class="trip-head">
+                <span class="times">Leave ${fmt(o.depart)} → ${fmt(o.arrive)}</span>
+                <span class="dur">${o.totalMinutes} min</span>
+              </div>
+              <div class="legs">${driveFirst ? carChips.join('') + transitChips : transitChips + carChips.join('')}</div>
+              <div class="trip-meta">${statusBadge(o.trip)} ${driveFirst
+                ? `catch ${fmt(o.trip.depart)} from ${esc(s.station.name.split(',')[0])}`
+                : `reach ${esc(s.station.name.split(',')[0])} ${fmt(o.trip.arrive)}`}</div>
+              ${hazards}
+              ${o.trip.alerts.map((a) => `<div class="alert">⚠ ${esc(a)}</div>`).join('')}
+              ${driveFirst ? itinerary(o.trip, [driveStep, parkStep]) : itinerary(o.trip, [], [parkStep, driveStep])}
+            </li>`;
+        }).join('')}</ol>`;
+    return `<section><h3>Via ${esc(s.station.name)}</h3>${body}</section>`;
+  }).join('');
+}
+
 function renderTrips(trips, error, bestIndex) {
   if (!trips.length) return `<li class="status ${error ? 'error' : ''}">${esc(error ?? 'No journeys found.')}</li>`;
   return trips.map((j, i) => {
-    const legs = j.legs.map((l) => l.mode === 'Walk'
-      ? `<span class="leg Walk">Walk ${l.durationMinutes ?? ''}${l.durationMinutes != null ? 'm' : ''}</span>`
-      : `<span class="leg ${esc(l.mode)}" title="${esc(`${l.mode} towards ${l.towards ?? ''}`)}">${esc(l.line ?? l.mode)}</span>`).join('');
+    const legs = j.legs.map(legLabel).join('');
     const first = j.legs.find((l) => l.mode !== 'Walk');
     return `
       <li class="${i === bestIndex ? 'best' : ''} ${j.cancelled ? 'cancelled' : ''}">
@@ -103,9 +152,9 @@ function renderTrips(trips, error, bestIndex) {
         <div class="trip-meta">
           ${statusBadge(j)}
           ${first ? ` ${esc(first.from)} ${fmt(first.depart)}` : ''}
-          ${j.interchanges ? ` · ${j.interchanges} change${j.interchanges > 1 ? 's' : ''}` : ''}
         </div>
         ${j.alerts.map((a) => `<div class="alert">⚠ ${esc(a)}</div>`).join('')}
+        ${itinerary(j)}
       </li>`;
   }).join('');
 }
@@ -118,6 +167,9 @@ function render(r) {
        <span class="muted">${esc(rec.reason)} ${esc(r.origin.name)} → ${esc(r.destination.name)}</span>`
     : '<span class="big">No estimate available</span>';
   $('drive').innerHTML = renderDrive(r.drive, r.errors.drive);
+  $('parkride-panel').hidden = !r.parkRide.length;
+  $('parkride-title').textContent = r.query.parkAt === 'end' ? 'Public transport + drive from station' : 'Drive to station + public transport';
+  $('parkride').innerHTML = renderParkRide(r.parkRide, rec, r.query.parkAt);
   $('trips').innerHTML = renderTrips(r.trips, r.errors.transit, rec?.kind === 'transit' ? rec.index : -1);
   $('results').hidden = false;
   const notes = [`Updated ${fmt(r.generatedAt)}`];
@@ -131,8 +183,10 @@ async function estimate() {
   const params = { from: $('from').value, to: $('to').value, mode: mode === 'arrive' ? 'arrive' : 'depart' };
   if (mode !== 'now') Object.assign(params, { time: $('time').value, date: $('date').value });
   if ($('rail').checked) params.railOnly = '1';
-  store.set('from', params.from);
-  store.set('to', params.to);
+  params.via = $('via').value;
+  params.park = $('park').value || '0';
+  params.parkAt = $('parkAt').value;
+  for (const k of ['from', 'to', 'via', 'park', 'parkAt']) store.set(k, $(k).value);
 
   const seq = ++requestSeq;
   clearTimeout(refreshTimer);
@@ -159,6 +213,9 @@ async function init() {
   $('demo-badge').hidden = !cfg.demo;
   $('from').value = store.get('from') || cfg.home || '';
   $('to').value = store.get('to') || cfg.work || '';
+  $('via').value = store.get('via') ?? cfg.via ?? '';
+  $('park').value = store.get('park') ?? cfg.parkMinutes ?? 5;
+  $('parkAt').value = store.get('parkAt') === 'end' ? 'end' : 'start';
   if (!cfg.hasApiKey) {
     $('status').className = 'status error';
     $('status').textContent = 'TFNSW_API_KEY is not configured on the server. See README.';
@@ -169,6 +226,8 @@ async function init() {
   $('auto').addEventListener('change', scheduleRefresh);
   $('swap').addEventListener('click', () => {
     [$('from').value, $('to').value] = [$('to').value, $('from').value];
+    // The car stays at the station, so the return trip drives last.
+    $('parkAt').value = $('parkAt').value === 'end' ? 'start' : 'end';
   });
   $('form').addEventListener('submit', (e) => { e.preventDefault(); estimate(); });
   syncWhenFields();

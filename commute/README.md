@@ -6,11 +6,14 @@ Estimates the travel time to work in New South Wales by combining:
   Transport for NSW (TfNSW) *Live Traffic Hazards* API, matched against the driving route.
 - **Train and public transport times.** Journeys from the TfNSW *Trip Planner* API, including
   real-time estimated departures, delays, cancellations and service alerts.
+- **Park and ride.** Drive to one or more stations, then continue by public transport, with any
+  changes between trains, metro, light rail, buses and ferries. For the trip home, it is the
+  reverse: public transport to the station, then a drive home.
 - **Driving time.** Either a traffic-aware estimate from the Google Routes API (optional key),
   or a model estimate: OSRM free-flow route time × a Sydney time-of-day congestion profile,
   plus an allowance for each live hazard within 250 m of the route.
 
-The app then recommends the best option. When you set a departure time, it picks the earliest
+The app then recommends the best option across all of these. When you set a departure time, it picks the earliest
 arrival. When you set an arrive-by time, it picks the latest departure that still arrives on
 time. Cancelled services are never recommended.
 
@@ -22,7 +25,9 @@ It has no dependencies and needs only Node.js 20.12 or later.
    to **Trip Planner APIs** and **Live Traffic Hazards**. Copy the API key.
 2. `cp .env.example .env` and set `TFNSW_API_KEY`, `HOME_ADDRESS` and `WORK_ADDRESS`.
    A location can be an address, suburb, station name, TfNSW stop id, or `lat,lon`.
-3. Optional: set `GOOGLE_MAPS_API_KEY` (with the Routes API enabled) for traffic-aware driving times.
+3. Optional: set `PARK_AND_RIDE_STATIONS` (for example `Epping Station; Hornsby Station`) and
+   `PARK_MINUTES` if you usually drive to a station.
+4. Optional: set `GOOGLE_MAPS_API_KEY` (with the Routes API enabled) for traffic-aware driving times.
 
 ## Usage
 
@@ -32,9 +37,29 @@ npm run demo          # same, using simulated data (no key or network needed)
 
 node cli.js                          # leave now, home -> work
 node cli.js --arrive 08:45 --rail    # arrive by 08:45, trains only
-node cli.js --reverse --depart 17:30 # trip home
+node cli.js --reverse --depart 17:30 # trip home (train to the station, then drive)
+node cli.js --via "Epping Station; Hornsby Station" --park 7
+node cli.js --no-via                 # skip park and ride
 node cli.js --from=-33.8173,151.0053 --to "Central" --json
 ```
+
+## Park and ride
+
+For each station, the app plans the drive once. It then asks the Trip Planner for the next
+services from that station to your destination, including any changes between services. For
+each service it gives the **latest time to leave home**: the service's departure, minus the time
+to park and walk to the platform, minus the drive time at that time of day (plus any hazards on
+the way). If a service is running late, the app uses its timetabled departure, because a late
+train can make up time.
+
+- **Car at the start** (the morning trip): drive to the station, then public transport.
+- **Car at the end** (the evening trip): public transport to the station, walk to the car, then
+  drive home. In the web page, swapping From and To switches between these two; in the CLI,
+  `--reverse` does the same.
+
+Each station shows three options. The recommendation compares them with driving and with public
+transport the whole way. If a station cannot be found, the app says so for that station and still
+shows the other results.
 
 The web page refreshes every 60 seconds while auto-refresh is ticked. It also remembers your
 last start and destination in this browser only.
@@ -43,7 +68,7 @@ last start and destination in this browser only.
 
 | Endpoint | Parameters |
 |---|---|
-| `GET /api/commute` | `from`, `to` (default from `.env`), `mode=depart\|arrive`, `time=HH:MM`, `date=YYYY-MM-DD`, `railOnly=1` |
+| `GET /api/commute` | `from`, `to` (default from `.env`), `mode=depart\|arrive`, `time=HH:MM`, `date=YYYY-MM-DD`, `railOnly=1`, `via=Station A; Station B`, `park=MINUTES`, `parkAt=start\|end` |
 | `GET /api/locations` | `q`: location search (Trip Planner stop finder) |
 | `GET /api/config` | defaults and whether demo mode is on |
 

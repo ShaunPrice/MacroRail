@@ -2,6 +2,7 @@ import { fileURLToPath } from 'node:url';
 import { TfnswClient } from './tfnsw.js';
 import { createDemoFetch } from './demo.js';
 import { OSRM_DEFAULT_URL } from './driving.js';
+import { parseStationList } from './parkride.js';
 
 export function loadConfig(env = process.env) {
   if (env === process.env) {
@@ -18,8 +19,10 @@ export function loadConfig(env = process.env) {
     tfnswApiKey: demo ? 'demo' : env.TFNSW_API_KEY,
     googleApiKey: demo ? undefined : env.GOOGLE_MAPS_API_KEY || undefined,
     osrmUrl: env.OSRM_URL || OSRM_DEFAULT_URL,
-    home: env.HOME_ADDRESS || (demo ? 'Parramatta Station' : ''),
-    work: env.WORK_ADDRESS || (demo ? 'Wynyard Station' : ''),
+    home: env.HOME_ADDRESS || (demo ? 'Cherrybrook' : ''),
+    work: env.WORK_ADDRESS || (demo ? 'Barangaroo' : ''),
+    via: parseStationList(env.PARK_AND_RIDE_STATIONS || (demo ? 'Epping Station; Macquarie University Station' : '')),
+    parkMinutes: Number(env.PARK_MINUTES ?? 5),
     hazardCacheSeconds: Number(env.HAZARD_CACHE_SECONDS ?? 60),
   };
 }

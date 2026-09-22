@@ -45,12 +45,20 @@ const HAZARDS = {
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 
+// Addresses and suburbs (not stations) for trying door-to-door and park-and-ride trips.
+const ADDRESSES = [
+  ['suburb:cherrybrook', 'Cherrybrook', -33.7220, 151.0440, 'suburb'],
+  ['suburb:castlehill', 'Castle Hill', -33.7310, 151.0040, 'suburb'],
+  ['poi:unsw', 'UNSW Kensington Campus, Kensington', -33.9173, 151.2313, 'poi'],
+  ['poi:barangaroo', 'Barangaroo, Sydney', -33.8610, 151.2020, 'poi'],
+].map(([id, name, lat, lon, type]) => ({ id, name, coord: [lat, lon], type }));
+
 function parseTpLocation(type, name) {
   if (type === 'coord') {
     const [lon, lat] = name.split(':').map(Number);
     return { name: `${lat.toFixed(4)}, ${lon.toFixed(4)}`, coord: [lat, lon] };
   }
-  return PLACES.find((p) => p.id === name) ?? PLACES[0];
+  return [...PLACES, ...ADDRESSES].find((p) => p.id === name) ?? PLACES[0];
 }
 
 function nearestStation(coord) {
@@ -61,16 +69,82 @@ const iso = (ms) => new Date(Math.round(ms / 60000) * 60000).toISOString().repla
 
 function stopFinder(url) {
   const q = (url.searchParams.get('name_sf') ?? '').toLowerCase().replace(/\bstation\b/g, '').trim();
-  const locations = PLACES.filter((p) => p.name.toLowerCase().includes(q)).map((p, i) => ({
+  const stops = PLACES.filter((p) => p.name.toLowerCase().includes(q)).map((p) => ({ ...p, type: 'stop' }));
+  const other = ADDRESSES.filter((p) => p.name.toLowerCase().includes(q));
+  const locations = [...stops, ...other].map((p, i) => ({
     id: p.id,
     name: p.name,
     disassembledName: p.name.split(',')[0],
-    type: 'stop',
+    type: p.type,
     coord: p.coord,
     matchQuality: 1000 - i,
     isBest: i === 0,
   }));
   return json({ version: '10.2.1.42', locations });
+}
+
+const CBD = [-33.8832, 151.2063];
+const walkMinutes = (a, b) => Math.round((haversine(a, b) * 1.3) / 80); // ~4.8 km/h
+
+// First/last mile: walk when short, otherwise a bus (or light rail near the CBD).
+function accessSegment(from, to) {
+  const walk = walkMinutes(from.coord, to.coord);
+  if (walk <= 0) return null;
+  if (walk <= 12) return { kind: 'walk', minutes: walk, from, to };
+  const lightRail = haversine(from.coord, CBD) < 6000 && haversine(to.coord, CBD) < 6000;
+  return {
+    kind: 'transit',
+    minutes: Math.round(haversine(from.coord, to.coord) / 1000 / (lightRail ? 0.3 : 0.33)) + 3,
+    from,
+    to,
+    cls: lightRail ? 4 : 5,
+    line: lightRail ? 'L2' : '610X',
+    product: lightRail ? 'Sydney Light Rail' : 'Sydney Buses Network',
+  };
+}
+
+// Rail between two stations; changes at a station on the way when the trip is long.
+function railSegments(a, b) {
+  const rideMin = (x, y) => Math.max(4, Math.round(haversine(x.coord, y.coord) / 1000 / 0.75)); // ~45 km/h
+  const direct = haversine(a.coord, b.coord);
+  const via = PLACES.filter((p) => p !== a && p !== b)
+    .map((p) => ({ p, detour: haversine(a.coord, p.coord) + haversine(p.coord, b.coord) - direct }))
+    .sort((x, y) => x.detour - y.detour)[0];
+  const train = (from, to, line) => ({ kind: 'transit', minutes: rideMin(from, to), from, to, cls: 1, line, product: 'Sydney Trains Network' });
+  if (direct > 15000 && via && via.detour < 1500) return [train(a, via.p, 'T1'), { kind: 'change', minutes: 4 }, train(via.p, b, 'T9')];
+  return [train(a, b, 'T1')];
+}
+
+function buildLeg(seg, dep, delay, slot, cancelled) {
+  const arr = dep + seg.minutes * 60000;
+  if (seg.kind === 'walk') {
+    return {
+      duration: seg.minutes * 60,
+      origin: { name: seg.from.name, coord: seg.from.coord },
+      destination: { name: seg.to.name, coord: seg.to.coord },
+      transportation: { product: { class: 100, name: 'footpath' } },
+    };
+  }
+  const platform = seg.cls === 1 ? `Platform ${1 + (slot % 4)}` : seg.cls === 4 ? 'Light Rail' : 'Stand A';
+  return {
+    duration: seg.minutes * 60,
+    isRealtimeControlled: true,
+    realtimeStatus: cancelled ? ['MONITORED', 'CANCELLED'] : ['MONITORED'],
+    origin: {
+      name: `${seg.from.name}, ${platform}`,
+      disassembledName: platform,
+      departureTimePlanned: iso(dep),
+      departureTimeEstimated: iso(dep + delay * 60000),
+    },
+    destination: { name: seg.to.name, arrivalTimePlanned: iso(arr), arrivalTimeEstimated: iso(arr + delay * 60000) },
+    transportation: {
+      number: seg.line,
+      disassembledName: seg.line,
+      product: { class: seg.cls, name: seg.product },
+      destination: { name: seg.to.name.split(',')[0].replace(' Station', '') },
+    },
+    infos: delay >= 5 ? [{ priority: 'high', subtitle: 'Trains running late due to an earlier signal repair (simulated)' }] : [],
+  };
 }
 
 function trip(url) {
@@ -82,64 +156,38 @@ function trip(url) {
   const when = sydneyLocalToDate(+d.slice(0, 4), +d.slice(4, 6), +d.slice(6, 8), +t.slice(0, 2), +t.slice(2, 4)).getTime();
   const arriveBy = sp.get('depArrMacro') === 'arr';
   const count = Number(sp.get('calcNumberOfTrips') ?? 5);
+  const railOnly = sp.get('exclMOT_5') === '1';
 
   const fromStop = nearestStation(origin.coord);
   const toStop = nearestStation(dest.coord);
-  const walkIn = Math.max(1, Math.round((haversine(origin.coord, fromStop.coord) * 1.3) / 80)); // ~4.8 km/h
-  const walkOut = Math.max(1, Math.round((haversine(dest.coord, toStop.coord) * 1.3) / 80));
-  const ride = Math.max(4, Math.round(haversine(fromStop.coord, toStop.coord) / 1000 / 0.75)); // ~45 km/h average
-  const headway = 10 * 60000;
+  const access = (a, b) => {
+    const seg = accessSegment(a, b);
+    return seg && railOnly && seg.kind === 'transit' ? { ...seg, kind: 'walk', minutes: walkMinutes(a.coord, b.coord) } : seg;
+  };
+  const segments = [access(origin, fromStop), ...railSegments(fromStop, toStop), access(toStop, dest)].filter(Boolean);
 
-  const firstTrainDep = arriveBy
-    ? when - (walkOut + ride) * 60000 - (count - 1) * headway
-    : Math.ceil((when + walkIn * 60000) / headway) * headway;
+  // Services are timed around the first rail leg, which runs every 10 minutes.
+  const railIdx = segments.findIndex((s) => s.cls === 1);
+  const before = segments.slice(0, railIdx).reduce((m, s) => m + s.minutes, 0);
+  const after = segments.slice(railIdx).reduce((m, s) => m + s.minutes, 0);
+  const headway = 10 * 60000;
+  const firstRailDep = arriveBy
+    ? Math.floor((when - after * 60000) / headway) * headway - (count - 1) * headway
+    : Math.ceil((when + before * 60000) / headway) * headway;
 
   const journeys = [];
   for (let i = 0; i < count; i++) {
-    const dep = firstTrainDep + i * headway;
-    const slot = Math.floor(dep / headway);
+    const railDep = firstRailDep + i * headway;
+    const slot = Math.floor(railDep / headway);
     const delay = slot % 3 === 1 ? 2 : slot % 7 === 3 ? 6 : 0;
     const cancelled = slot % 11 === 5;
-    const arr = dep + ride * 60000;
-    journeys.push({
-      legs: [
-        {
-          duration: walkIn * 60,
-          origin: { name: origin.name, coord: origin.coord },
-          destination: { name: fromStop.name, coord: fromStop.coord },
-          transportation: { product: { class: 100, name: 'footpath' } },
-        },
-        {
-          duration: ride * 60,
-          isRealtimeControlled: true,
-          realtimeStatus: cancelled ? ['MONITORED', 'CANCELLED'] : ['MONITORED'],
-          origin: {
-            name: `${fromStop.name}, Platform ${1 + (slot % 4)}`,
-            disassembledName: `Platform ${1 + (slot % 4)}`,
-            departureTimePlanned: iso(dep),
-            departureTimeEstimated: iso(dep + delay * 60000),
-          },
-          destination: {
-            name: toStop.name,
-            arrivalTimePlanned: iso(arr),
-            arrivalTimeEstimated: iso(arr + delay * 60000),
-          },
-          transportation: {
-            number: 'T1 North Shore & Western Line',
-            disassembledName: 'T1',
-            product: { class: 1, name: 'Sydney Trains Network' },
-            destination: { name: toStop.name.split(',')[0].replace(' Station', '') },
-          },
-          infos: delay >= 5 ? [{ priority: 'high', subtitle: 'Trains running late due to an earlier signal repair (simulated)' }] : [],
-        },
-        {
-          duration: walkOut * 60,
-          origin: { name: toStop.name, coord: toStop.coord },
-          destination: { name: dest.name, coord: dest.coord },
-          transportation: { product: { class: 100, name: 'footpath' } },
-        },
-      ],
-    });
+    let clock = railDep - before * 60000;
+    const legs = [];
+    for (const seg of segments) {
+      if (seg.kind !== 'change') legs.push(buildLeg(seg, clock, seg.cls ? delay : 0, slot, cancelled && seg === segments[railIdx]));
+      clock += seg.minutes * 60000;
+    }
+    journeys.push({ legs });
   }
   return json({ version: '10.2.1.42', journeys });
 }

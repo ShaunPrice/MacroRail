@@ -68,32 +68,30 @@ export function hazardsOnRoute(geometry, hazards, bufferMeters = 250) {
     .sort((a, b) => a.distanceFromRouteMeters - b.distanceFromRouteMeters);
 }
 
+/** Fetches the driving route once; time it for any departure with `timeDrive`. */
+export function getDriveRoute(from, to, { googleApiKey, osrmUrl, departAt = null, fetchImpl = globalThis.fetch } = {}) {
+  return googleApiKey
+    ? googleRoute(from, to, { apiKey: googleApiKey, departAt, fetchImpl })
+    : osrmRoute(from, to, { fetchImpl, baseUrl: osrmUrl });
+}
+
 /**
- * Estimates the drive for a departure time, or for an arrival deadline.
+ * Times a route for a departure time, or for an arrival deadline.
+ * Google routes use their traffic-aware duration; OSRM routes use the congestion model.
+ * @param {object} route from getDriveRoute
  * @param {object} o
- * @param {number[]} o.from [lat, lon]
- * @param {number[]} o.to   [lat, lon]
  * @param {Date} o.when
  * @param {boolean} o.arriveBy
  * @param {Array} o.hazards normalised TfNSW hazards
  */
-export async function estimateDrive({
-  from,
-  to,
+export function timeDrive(route, {
   when,
   arriveBy = false,
   hazards = [],
-  googleApiKey,
-  osrmUrl,
-  fetchImpl = globalThis.fetch,
   profile = DEFAULT_CONGESTION_PROFILE,
   hazardDelays = DEFAULT_HAZARD_DELAYS,
   hazardBufferMeters = 250,
 }) {
-  const route = googleApiKey
-    ? await googleRoute(from, to, { apiKey: googleApiKey, departAt: arriveBy ? null : when, fetchImpl })
-    : await osrmRoute(from, to, { fetchImpl, baseUrl: osrmUrl });
-
   const onRoute = hazardsOnRoute(route.geometry, hazards, hazardBufferMeters).map((h) => ({
     ...h,
     delayMinutes: route.source === 'google' ? null : hazardDelayMinutes(h, hazardDelays),
@@ -136,6 +134,11 @@ export async function estimateDrive({
     depart: departAt,
     arrive: new Date(departAt.getTime() + totalMinutes * 60000),
     hazards: onRoute,
-    geometry: route.geometry,
   };
+}
+
+/** Routes and times a door-to-door drive. */
+export async function estimateDrive({ from, to, when, arriveBy = false, hazards = [], googleApiKey, osrmUrl, fetchImpl, ...model }) {
+  const route = await getDriveRoute(from, to, { googleApiKey, osrmUrl, fetchImpl, departAt: arriveBy ? null : when });
+  return { ...timeDrive(route, { when, arriveBy, hazards, ...model }), geometry: route.geometry };
 }
