@@ -1,0 +1,17 @@
+{
+  "name": "nsw-commute",
+  "version": "0.1.0",
+  "description": "Estimates the travel time to work in NSW using live traffic hazards and real-time train/public transport times from Transport for NSW Open Data.",
+  "type": "module",
+  "private": true,
+  "license": "GPL-3.0-or-later",
+  "engines": {
+    "node": ">=20.12"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "demo": "DEMO=1 node server.js",
+    "cli": "node cli.js",
+    "test": "node --test"
+  }
+}

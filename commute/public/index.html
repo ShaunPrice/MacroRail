@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NSW Commute</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%230b5cad%22/%3E%3Cpath d=%22M4 11h8M5 4h6v5H5z%22 stroke=%22white%22 fill=%22none%22/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <h1>NSW Commute</h1>
+    <span id="demo-badge" class="badge warn" hidden>Demo: simulated data</span>
+  </header>
+
+  <main>
+    <form id="form" class="panel" autocomplete="off">
+      <div class="route">
+        <label>From <input id="from" name="from" list="from-list" placeholder="Home address, suburb or station" required></label>
+        <button type="button" id="swap" class="icon" title="Swap start and destination" aria-label="Swap start and destination">&#8645;</button>
+        <label>To <input id="to" name="to" list="to-list" placeholder="Work address, suburb or station" required></label>
+        <datalist id="from-list"></datalist>
+        <datalist id="to-list"></datalist>
+      </div>
+      <div class="when">
+        <select id="mode" name="mode" aria-label="When">
+          <option value="now">Leave now</option>
+          <option value="depart">Depart at</option>
+          <option value="arrive">Arrive by</option>
+        </select>
+        <input id="time" name="time" type="time" hidden aria-label="Time">
+        <input id="date" name="date" type="date" hidden aria-label="Date">
+        <label class="check"><input id="rail" name="railOnly" type="checkbox"> Trains only</label>
+        <label class="check"><input id="auto" type="checkbox" checked> Auto-refresh</label>
+        <button type="submit" class="primary">Estimate</button>
+      </div>
+    </form>
+
+    <p id="status" class="status" role="status"></p>
+
+    <section id="results" hidden>
+      <div id="recommendation" class="panel rec"></div>
+      <div class="grid">
+        <article class="panel">
+          <h2>Drive</h2>
+          <div id="drive"></div>
+        </article>
+        <article class="panel">
+          <h2>Public transport</h2>
+          <ol id="trips" class="trips"></ol>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Data: Transport for NSW Open Data (Trip Planner, Live Traffic Hazards), OpenStreetMap/OSRM.
+    Driving times without a traffic-aware provider are model estimates.
+  </footer>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

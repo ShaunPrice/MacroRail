@@ -1,0 +1,67 @@
+{
+  "version": "10.2.1.42",
+  "journeys": [
+    {
+      "isAdditional": false,
+      "legs": [
+        {
+          "duration": 420,
+          "origin": { "id": "streetID:1", "name": "10 Smith St, Parramatta", "type": "singlehouse", "coord": [-33.8150, 151.0010] },
+          "destination": { "id": "2150172", "name": "Parramatta Station, Platform 3, Parramatta", "type": "platform", "coord": [-33.8173, 151.0053] },
+          "transportation": { "product": { "class": 100, "name": "footpath", "iconId": 100 } }
+        },
+        {
+          "duration": 1740,
+          "isRealtimeControlled": true,
+          "realtimeStatus": ["MONITORED"],
+          "origin": {
+            "id": "2150172",
+            "name": "Parramatta Station, Platform 3, Parramatta",
+            "disassembledName": "Platform 3",
+            "type": "platform",
+            "departureTimePlanned": "2026-09-22T21:30:00Z",
+            "departureTimeEstimated": "2026-09-22T21:33:00Z"
+          },
+          "destination": {
+            "id": "2000341",
+            "name": "Wynyard Station, Platform 4, Sydney",
+            "disassembledName": "Platform 4",
+            "type": "platform",
+            "arrivalTimePlanned": "2026-09-22T21:59:00Z",
+            "arrivalTimeEstimated": "2026-09-22T22:02:00Z"
+          },
+          "transportation": {
+            "id": "nsw:020T1: :H:sj2",
+            "name": "Sydney Trains Network T1 North Shore & Western Line",
+            "disassembledName": "T1",
+            "number": "T1 North Shore & Western Line",
+            "product": { "class": 1, "name": "Sydney Trains Network", "iconId": 1 },
+            "destination": { "id": "207720", "name": "Hornsby via Central" }
+          },
+          "infos": [
+            { "priority": "normal", "subtitle": "Allow extra travel time" },
+            { "priority": "normal", "subtitle": "Allow extra travel time" }
+          ]
+        },
+        {
+          "duration": 300,
+          "origin": { "id": "2000341", "name": "Wynyard Station, Platform 4, Sydney" },
+          "destination": { "id": "streetID:2", "name": "1 York St, Sydney", "type": "singlehouse" },
+          "transportation": { "product": { "class": 100, "name": "footpath", "iconId": 100 } }
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "duration": 2400,
+          "isRealtimeControlled": true,
+          "realtimeStatus": ["MONITORED", "CANCELLED"],
+          "origin": { "name": "Parramatta Station", "departureTimePlanned": "2026-09-22T21:40:00Z" },
+          "destination": { "name": "Central Station", "arrivalTimePlanned": "2026-09-22T22:20:00Z" },
+          "transportation": { "disassembledName": "M52", "product": { "class": 5, "name": "Sydney Buses Network" }, "destination": { "name": "Circular Quay" } }
+        }
+      ]
+    }
+  ]
+}

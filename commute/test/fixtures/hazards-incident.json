@@ -1,0 +1,32 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": 123456,
+      "geometry": { "type": "Point", "coordinates": [151.0653, -33.8342] },
+      "properties": {
+        "headline": "CRASH Concord West",
+        "displayName": "Crash",
+        "mainCategory": "Crash",
+        "isMajor": true,
+        "ended": false,
+        "adviceA": "Exercise caution",
+        "lastUpdated": 1790000000000,
+        "roads": [{ "mainStreet": "Concord Road", "crossStreet": "Victoria Avenue", "suburb": "Concord West" }]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 123457,
+      "geometry": { "type": "Point", "coordinates": [151.0, -33.9] },
+      "properties": { "headline": "Old crash", "ended": true, "roads": [] }
+    },
+    {
+      "type": "Feature",
+      "id": 123458,
+      "geometry": { "type": "MultiPoint", "coordinates": [[151.1, -33.8], [151.2, -33.9]] },
+      "properties": { "displayName": "Breakdown", "roads": [{ "mainStreet": "Pacific Highway" }] }
+    }
+  ]
+}
