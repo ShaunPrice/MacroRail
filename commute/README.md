@@ -64,6 +64,42 @@ shows the other results.
 The web page refreshes every 60 seconds while auto-refresh is ticked. It also remembers your
 last start and destination in this browser only.
 
+## Android app
+
+`android/` contains a small native Android app (no third-party dependencies) that runs the same
+interface in a WebView. It needs no server: the planner runs on the phone. Requests to Transport
+for NSW, OSRM and Google go through a native bridge that only allows those three HTTPS hosts. You
+enter your API key under **Settings** (the gear icon). It is stored only on the phone.
+
+**Getting the APK.** Each push that changes `commute/` runs the *NSW Commute Android APK* GitHub
+Actions workflow. The workflow runs the tests, builds the APK, and publishes it as a pre-release
+named *NSW Commute build N*, with the `.apk` and a `.zip` of it. To install on the phone:
+
+1. Open the release page on the phone and download the `.apk`.
+2. Open the download. When Android asks, allow installs from that app (browser or My Files).
+3. Open **NSW Commute**, tap the gear icon, and enter your key (or turn on demo mode).
+
+**Signing.** Without signing secrets, the APK is signed with a temporary debug key, so each new
+build must be installed after uninstalling the previous one. For in-place updates, create a
+keystore once and add these repository secrets: `ANDROID_KEYSTORE_BASE64` (the keystore,
+base64-encoded), `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` and `ANDROID_KEY_PASSWORD`.
+
+```bash
+keytool -genkeypair -v -keystore release.jks -alias nswcommute -keyalg RSA -keysize 2048 -validity 10000
+base64 -w0 release.jks   # paste into the ANDROID_KEYSTORE_BASE64 secret
+```
+
+**Building locally** needs the Android SDK (platform 35) and JDK 17 or later:
+
+```bash
+node android/sync-web.mjs                   # copy public/ and lib/ into the app's assets
+gradle -p android assembleDebug             # Gradle 8.9 or later
+adb install android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+To try the app's standalone mode in a desktop browser, run the server and open
+`http://localhost:3000/?standalone=1`.
+
 ## HTTP API
 
 | Endpoint | Parameters |

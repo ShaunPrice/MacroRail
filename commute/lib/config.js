@@ -1,6 +1,4 @@
 import { fileURLToPath } from 'node:url';
-import { TfnswClient } from './tfnsw.js';
-import { createDemoFetch } from './demo.js';
 import { OSRM_DEFAULT_URL } from './driving.js';
 import { parseStationList } from './parkride.js';
 
@@ -27,23 +25,5 @@ export function loadConfig(env = process.env) {
   };
 }
 
-/** Builds the API client, hazard cache and driving options from config. */
-export function createServices(config, fetchImpl = config.demo ? createDemoFetch() : globalThis.fetch) {
-  const client = new TfnswClient({ apiKey: config.tfnswApiKey, fetchImpl });
-  let cache = { at: 0, promise: null };
-  const getHazards = () => {
-    if (!cache.promise || Date.now() - cache.at > config.hazardCacheSeconds * 1000) {
-      const promise = client.openHazards();
-      promise.catch(() => {
-        if (cache.promise === promise) cache = { at: 0, promise: null };
-      });
-      cache = { at: Date.now(), promise };
-    }
-    return cache.promise;
-  };
-  return {
-    client,
-    getHazards,
-    driveOptions: { googleApiKey: config.googleApiKey, osrmUrl: config.osrmUrl, fetchImpl },
-  };
-}
+// Re-exported for existing callers; the implementation is browser-safe in services.js.
+export { createServices } from './services.js';

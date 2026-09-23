@@ -32,6 +32,7 @@
       <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3M19.5 4.5v4h-4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
       <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6L6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
       <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.5A8 8 0 0 1 9.5 4.5a8 8 0 1 0 10 10z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></symbol>
+      <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
       <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     </defs>
   </svg>
@@ -45,6 +46,7 @@
       <div class="appbar-actions">
         <span id="live" class="live" hidden><span class="live-dot"></span><span id="live-text">Live</span></span>
         <button id="theme" class="icon-btn" type="button" aria-label="Toggle colour theme"><svg><use href="#i-moon"/></svg></button>
+        <button id="settings-btn" class="icon-btn" type="button" aria-label="Settings" hidden><svg><use href="#i-settings"/></svg></button>
       </div>
     </div>
   </header>
@@ -155,6 +157,29 @@
   </div>
 
   <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+
+  <dialog id="settings" class="sheet" aria-labelledby="settings-title">
+    <form id="settings-form" autocomplete="off">
+      <div class="sheet-head">
+        <h2 id="settings-title">Settings</h2>
+        <button type="button" id="settings-cancel" class="icon-btn" aria-label="Close settings"><svg><use href="#i-x"/></svg></button>
+      </div>
+      <p id="settings-note" class="sheet-note" hidden>To use live data, request a free API key from the Transport for NSW Open Data Hub (opendata.transport.nsw.gov.au) and subscribe it to <b>Trip Planner APIs</b> and <b>Live Traffic Hazards</b>.</p>
+      <label class="field"><span class="field-label">Transport for NSW API key</span>
+        <input name="tfnswApiKey" type="password" spellcheck="false" autocapitalize="off"></label>
+      <label class="field"><span class="field-label">Google Maps API key <span class="hint">optional, for traffic-aware driving</span></span>
+        <input name="googleApiKey" type="password" spellcheck="false" autocapitalize="off"></label>
+      <label class="switch"><input id="show-keys" type="checkbox"><span class="track"></span><span>Show keys</span></label>
+      <hr>
+      <label class="field"><span class="field-label">Home</span><input name="home" placeholder="Address, suburb or station"></label>
+      <label class="field"><span class="field-label">Work</span><input name="work" placeholder="Address, suburb or station"></label>
+      <label class="field"><span class="field-label">Park-and-ride stations <span class="hint">separate several with ;</span></span><input name="via" placeholder="e.g. Epping Station; Hornsby Station"></label>
+      <label class="field"><span class="field-label">Car ↔ platform (min)</span><input name="parkMinutes" type="number" min="0" max="60" inputmode="numeric"></label>
+      <label class="switch"><input name="demo" type="checkbox"><span class="track"></span><span>Demo mode (simulated data, no key needed)</span></label>
+      <p class="sheet-note">Keys are stored only on this device and sent only to the services they belong to.</p>
+      <button type="submit" class="btn-primary">Save</button>
+    </form>
+  </dialog>
   <script type="module" src="app.js"></script>
 </body>
 </html>

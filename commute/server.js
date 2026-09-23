@@ -3,11 +3,10 @@ import { readFile } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadConfig, createServices } from './lib/config.js';
-import { planCommute } from './lib/commute.js';
-import { parseSydneyDateTime } from './lib/time.js';
-import { parseStationList } from './lib/parkride.js';
+import { createRoutes } from './lib/routes.js';
 
 const PUBLIC_DIR = fileURLToPath(new URL('./public/', import.meta.url));
+const LIB_DIR = fileURLToPath(new URL('./lib/', import.meta.url));
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml' };
 
 const sendJson = (res, status, body) => {
@@ -16,46 +15,7 @@ const sendJson = (res, status, body) => {
 };
 
 export function createApp(config, services = createServices(config)) {
-  const { client, getHazards, driveOptions } = services;
-
-  const routes = {
-    '/api/config': async () => ({
-      demo: config.demo,
-      home: config.home,
-      work: config.work,
-      via: config.via.join('; '),
-      parkMinutes: config.parkMinutes,
-      drivingSource: config.googleApiKey ? 'google' : 'model',
-      hasApiKey: Boolean(config.tfnswApiKey),
-    }),
-
-    '/api/locations': async (q) => {
-      const query = (q.get('q') ?? '').trim();
-      return query.length < 2 ? [] : client.findLocations(query);
-    },
-
-    '/api/commute': async (q) => {
-      const arriveBy = q.get('mode') === 'arrive';
-      const park = Number(q.get('park') ?? config.parkMinutes);
-      if (!Number.isFinite(park) || park < 0 || park > 60) throw new Error('Park time must be between 0 and 60 minutes');
-      const when = q.get('time') ? parseSydneyDateTime(q.get('date'), q.get('time')) : new Date();
-      const result = await planCommute({
-        client,
-        from: q.get('from') || config.home,
-        to: q.get('to') || config.work,
-        when,
-        arriveBy,
-        railOnly: q.get('railOnly') === '1',
-        via: parseStationList(q.has('via') ? q.get('via') : config.via),
-        parkMinutes: park,
-        parkAt: q.get('parkAt') === 'end' ? 'end' : 'start',
-        getHazards,
-        driveOptions,
-      });
-      if (result.drive) delete result.drive.geometry;
-      return result;
-    },
-  };
+  const routes = createRoutes(config, services);
 
   return async (req, res) => {
     const url = new URL(req.url, 'http://localhost');
@@ -66,7 +26,9 @@ export function createApp(config, services = createServices(config)) {
 
       const rel = normalize(url.pathname === '/' ? 'index.html' : url.pathname.slice(1));
       if (rel.startsWith('..')) return sendJson(res, 400, { error: 'Bad path' });
-      const body = await readFile(join(PUBLIC_DIR, rel));
+      // Shared planner modules, for trying the Android app's standalone mode in a browser.
+      const isLib = rel.startsWith('lib/') && extname(rel) === '.js' && rel !== 'lib/config.js';
+      const body = await readFile(isLib ? join(LIB_DIR, rel.slice(4)) : join(PUBLIC_DIR, rel));
       res.writeHead(200, { 'Content-Type': MIME[extname(rel)] ?? 'application/octet-stream' });
       res.end(body);
     } catch (err) {

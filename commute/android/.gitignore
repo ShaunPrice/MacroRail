@@ -1,0 +1,8 @@
+.gradle/
+build/
+app/build/
+local.properties
+*.jks
+*.keystore
+# Generated from ../public and ../lib by sync-web.mjs
+app/src/main/assets/www/

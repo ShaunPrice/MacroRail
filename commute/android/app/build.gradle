@@ -1,0 +1,52 @@
+plugins {
+    id 'com.android.application'
+}
+
+// Optional release signing from environment variables (see README). Without them,
+// the release APK is signed with the debug key so it can still be installed.
+def keystorePath = System.getenv('ANDROID_KEYSTORE_PATH')
+def hasReleaseKey = keystorePath && file(keystorePath).exists()
+
+android {
+    namespace 'com.shaunprice.nswcommute'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.shaunprice.nswcommute'
+        minSdk 26
+        targetSdk 35
+        versionCode Integer.parseInt(System.getenv('GITHUB_RUN_NUMBER') ?: '1')
+        versionName '0.4.' + (System.getenv('GITHUB_RUN_NUMBER') ?: '0')
+    }
+
+    signingConfigs {
+        if (hasReleaseKey) {
+            release {
+                storeFile file(keystorePath)
+                storePassword System.getenv('ANDROID_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('ANDROID_KEY_ALIAS')
+                keyPassword System.getenv('ANDROID_KEY_PASSWORD')
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig hasReleaseKey ? signingConfigs.release : signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+tasks.named('preBuild') {
+    doFirst {
+        if (!file('src/main/assets/www/index.html').exists()) {
+            throw new GradleException('Web assets missing: run `node android/sync-web.mjs` from the commute folder first.')
+        }
+    }
+}

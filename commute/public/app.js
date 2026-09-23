@@ -407,7 +407,12 @@ function render(r) {
 const whenMode = () => document.querySelector('input[name=when]:checked').value;
 const parkAt = () => document.querySelector('input[name=parkAt]:checked').value;
 
+// Standalone (Android app): plan on the device. Otherwise call the Node server.
+const STANDALONE = Boolean(window.NativeHttp) || new URLSearchParams(location.search).has('standalone');
+const local = STANDALONE ? import('./standalone.js') : null;
+
 async function api(path, params) {
+  if (local) return (await local).call(path, params);
   const res = await fetch(`${path}?${new URLSearchParams(params)}`);
   const body = await res.json();
   if (!res.ok) throw new Error(body.error ?? `HTTP ${res.status}`);
@@ -489,7 +494,16 @@ function applyTheme(theme) {
   const dark = theme ? theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
   $('theme').innerHTML = icon(dark ? 'sun' : 'moon');
   $('theme').setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+  window.NativeApp?.setTheme(dark);
 }
+
+// Android back button: close an open dialog before leaving the app.
+window.__onBack = () => {
+  const open = document.querySelector('dialog[open]');
+  if (!open) return false;
+  open.close();
+  return true;
+};
 
 async function init() {
   applyTheme(store.get('theme'));
@@ -504,8 +518,8 @@ async function init() {
 
   const cfg = await api('/api/config', {}).catch(() => ({}));
   $('live').hidden = false;
-  $('live').classList.toggle('demo', Boolean(cfg.demo));
-  $('live-text').textContent = cfg.demo ? 'Demo data' : 'Live';
+  $('live').classList.toggle('demo', Boolean(cfg.demo) || !cfg.hasApiKey);
+  $('live-text').textContent = cfg.demo ? 'Demo data' : cfg.hasApiKey ? 'Live' : 'Set-up needed';
 
   $('from').value = store.get('from') || cfg.home || '';
   $('to').value = store.get('to') || cfg.work || '';
@@ -536,8 +550,54 @@ async function init() {
   $('form').addEventListener('submit', (e) => { e.preventDefault(); estimate(); });
   syncWhenFields();
 
-  if (!cfg.hasApiKey) showBanner('error', 'The server has no TFNSW_API_KEY configured. See the README to add one, or run the demo.');
-  else if ($('from').value && $('to').value) estimate();
+  if (STANDALONE) await initSettings(cfg);
+
+  if (!cfg.hasApiKey) {
+    showBanner('error', STANDALONE
+      ? 'Add your Transport for NSW API key in Settings, or turn on demo mode to try the app.'
+      : 'The server has no TFNSW_API_KEY configured. See the README to add one, or run the demo.');
+    if (STANDALONE) $('settings').showModal();
+  } else if ($('from').value && $('to').value) estimate();
+}
+
+/* ---------- Settings (standalone app only) ---------- */
+
+async function initSettings(cfg) {
+  const { loadSettings, saveSettings } = await local;
+  const dialog = $('settings');
+  const form = $('settings-form');
+  const fill = () => {
+    const s = loadSettings();
+    for (const k of ['tfnswApiKey', 'googleApiKey', 'home', 'work', 'via', 'parkMinutes']) form.elements[k].value = s[k] ?? '';
+    form.elements.demo.checked = Boolean(s.demo);
+  };
+  $('settings-btn').hidden = false;
+  $('settings-btn').addEventListener('click', () => { fill(); dialog.showModal(); });
+  $('settings-cancel').addEventListener('click', () => dialog.close());
+  $('show-keys').addEventListener('change', (e) => {
+    for (const k of ['tfnswApiKey', 'googleApiKey']) form.elements[k].type = e.target.checked ? 'text' : 'password';
+  });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const s = saveSettings({
+      tfnswApiKey: form.elements.tfnswApiKey.value,
+      googleApiKey: form.elements.googleApiKey.value,
+      home: form.elements.home.value.trim(),
+      work: form.elements.work.value.trim(),
+      via: form.elements.via.value.trim(),
+      parkMinutes: form.elements.parkMinutes.value,
+      demo: form.elements.demo.checked,
+    });
+    // New defaults replace the remembered trip so the next estimate uses them.
+    if (s.home) store.set('from', s.home);
+    if (s.work) store.set('to', s.work);
+    store.set('via', s.via);
+    store.set('park', String(s.parkMinutes));
+    dialog.close();
+    location.reload();
+  });
+  fill();
+  if (!cfg.demo && !cfg.hasApiKey) $('settings-note').hidden = false;
 }
 
 init();
